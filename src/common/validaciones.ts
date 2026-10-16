@@ -3,7 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 export type ErrorValidacion = string | null;
 const PATRON_SECUENCIA = /^[ACGT]+$/;
 const PATRON_ENTERO_POSITIVO = /^[1-9]\d*$/;
-const PATRON_FECHA = /^(\d{2})-(\d{2})-(\d{4})$/;
+const PATRON_FECHA = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 function obligatorio(campo: string): string {
     return `El campo ${campo} es obligatorio`;
@@ -103,11 +103,11 @@ export function parsearIdRuta(id: string): number {
 }
 
 export function hoyEnColombia(): string {
-    return new Intl.DateTimeFormat('es-CO', {
+    return new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Bogota',
-        day: '2-digit',
-        month: '2-digit',
         year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
     }).format(new Date());
 }
 
@@ -125,11 +125,11 @@ export function validarFormatoFecha(valor: unknown, campo: string): ErrorValidac
         return `El campo ${campo} debe tener el formato DD-MM-YYYY (se recibió "${valor}")`;
     }
 
-    const dia = Number(partes[1]);
+    const anio = Number(partes[1]);
     const mes = Number(partes[2]);
-    const anio = Number(partes[3]);
-    const fecha = new Date(Date.UTC(dia, mes - 1, anio));
-    if (fecha.getUTCDate() !== dia || fecha.getUTCMonth() !== mes - 1 || fecha.getUTCFullYear() !== anio) {
+    const dia = Number(partes[3]);
+    const fecha = new Date(Date.UTC(anio, mes - 1, dia));
+    if (fecha.getUTCFullYear() !== anio || fecha.getUTCMonth() !== mes - 1 || fecha.getUTCDate() !== dia) {
         return `El campo ${campo} no es una fecha real (se recibió "${valor}")`;
     }
 
