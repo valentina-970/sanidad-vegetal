@@ -37,6 +37,39 @@ export function validarSecuencia(valor: unknown, campo: string): ErrorValidacion
     if (!PATRON_SECUENCIA.test(valor)) {
         return `El campo ${campo} solo puede contener las letras A, C, G y T en mayúscula`;
     }
+
+    return null;
+}
+
+export function validarTexto(valor: unknown, campo: string, longitudMaxima?: number): ErrorValidacion {
+    if (valor === undefined || valor === null) {
+        return obligatorio(campo);
+    }
+
+    if (typeof valor !== 'string') {
+        return `El campo ${campo} debe ser un texto`;
+    }
+
+    const limpio = valor.trim();
+    if (limpio.length === 0) {
+        return `El campo ${campo} no puede estar vacío`;
+    }
+
+    if (longitudMaxima !== undefined && limpio.length > longitudMaxima) {
+        return `El campo ${campo} no puede tener más de ${longitudMaxima} caracteres (tiene ${limpio.length})`;
+    }
+
+    return null;
+}
+
+export function validarLista(valor: unknown, campo: string, permitidos: readonly string[]): ErrorValidacion {
+    if (valor === undefined || valor === null) {
+        return obligatorio(campo);
+    }
+
+    if (typeof valor !== 'string' || !permitidos.includes(valor)) {
+        return `El campo ${campo} debe ser uno de: ${permitidos.join(', ')}`;
+    }
     
     return null;
 }
