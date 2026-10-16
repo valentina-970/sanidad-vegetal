@@ -2,6 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 
 export type ErrorValidacion = string | null;
 const PATRON_SECUENCIA = /^[ACGT]+$/;
+const PATRON_ENTERO_POSITIVO = /^[1-9]\d*$/;
 
 function obligatorio(campo: string): string {
     return `El campo ${campo} es obligatorio`;
@@ -70,6 +71,32 @@ export function validarLista(valor: unknown, campo: string, permitidos: readonly
     if (typeof valor !== 'string' || !permitidos.includes(valor)) {
         return `El campo ${campo} debe ser uno de: ${permitidos.join(', ')}`;
     }
-    
+
     return null;
+}
+
+export function validarId(valor: unknown, campo: string): ErrorValidacion {
+    if (valor === undefined || valor === null) {
+        return obligatorio(campo);
+    }
+
+    if (typeof valor !== 'number' || !Number.isSafeInteger(valor) || valor <= 0) {
+        return `El campo ${campo} debe ser un número entero positivo`;
+    }
+
+    return null;
+}
+
+export function validarIdTexto(valor: unknown, campo: string): ErrorValidacion {
+    if (typeof valor !== 'string' || !PATRON_ENTERO_POSITIVO.test(valor)) {
+        return `El campo ${campo} debe ser un número entero positivo (se recibió "${String(valor)}")`;
+    }
+
+    return null;
+}
+
+export function parsearIdRuta(id: string): number {
+    lanzarSiHayErrores([validarIdTexto(id, 'id')]);
+
+    return Number(id);
 }
