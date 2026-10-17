@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { PlantasModule } from './modules/plantas/plantas.module';
 import { PatogenosModule } from './modules/patogenos/patogenos.module.js';
 import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
 
@@ -22,8 +23,9 @@ import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
         synchronize: true,
       }),
     }),
+    PlantasModule,
     PatogenosModule,
-    EnfermedadesModule,
+    EnfermedadesModule
   ],
   controllers: [AppController],
   providers: [AppService],
