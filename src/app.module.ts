@@ -7,6 +7,7 @@ import { PlantasModule } from './modules/plantas/plantas.module';
 import { PatogenosModule } from './modules/patogenos/patogenos.module.js';
 import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
 import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibilidades.module';
+import { CultivosModule } from './modules/cultivos/cultivos.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibil
     PlantasModule,
     PatogenosModule,
     EnfermedadesModule,
-    SusceptibilidadesModule
+    SusceptibilidadesModule,
+    CultivosModule
   ],
   controllers: [AppController],
   providers: [AppService],
