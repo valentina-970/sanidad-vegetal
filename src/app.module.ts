@@ -6,6 +6,7 @@ import { AppService } from './app.service.js';
 import { PlantasModule } from './modules/plantas/plantas.module';
 import { PatogenosModule } from './modules/patogenos/patogenos.module.js';
 import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
+import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibilidades.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
     }),
     PlantasModule,
     PatogenosModule,
-    EnfermedadesModule
+    EnfermedadesModule,
+    SusceptibilidadesModule
   ],
   controllers: [AppController],
   providers: [AppService],

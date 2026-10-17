@@ -1,17 +1,29 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module.js';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const configuracion = new DocumentBuilder()
-    .setTitle('API de Sanidad Vegetal')
-    .setDescription('API de Breaze in the Moon para gestionar plantas, patógenos, enfermedades, tratamientos, cultivos y brotes')
+  // Validaciones globales para procesar los DTOs
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  // Configuración de Swagger
+  const config = new DocumentBuilder()
+    .setTitle('API Sanidad Vegetal')
+    .setDescription('Documentación interactiva de la API')
     .setVersion('1.0')
     .build();
-  const documento = SwaggerModule.createDocument(app, configuracion);
-  SwaggerModule.setup('docs', app, documento);
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
 }
