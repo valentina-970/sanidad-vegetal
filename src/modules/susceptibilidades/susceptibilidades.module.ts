@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { SusceptibilidadesService } from './susceptibilidades.service';
-import { SusceptibilidadesController } from './susceptibilidades.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Susceptibilidades} from './entities/susceptibilidade.entity';
+import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
+import { Planta } from '../plantas/entities/plantas.entity.js';
+import { Susceptibilidad } from './entities/susceptibilidades.entity.js';
+import { SusceptibilidadesController } from './susceptibilidades.controller.js';
+import { SusceptibilidadesService } from './susceptibilidades.service.js';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Susceptibilidad, Planta, Enfermedad])],
   controllers: [SusceptibilidadesController],
   providers: [SusceptibilidadesService],
-  imports: [TypeOrmModule.forFeature([Susceptibilidades])],
-  exports: [SusceptibilidadesService],
 })
-export class SusceptibilidadesModule {}
+export class SusceptibilidadesModule { }
