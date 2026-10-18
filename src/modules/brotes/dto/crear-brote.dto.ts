@@ -13,6 +13,6 @@ export class CrearBroteDto {
   @ApiProperty({ description: 'Fecha del brote en formato YYYY-MM-DD (no futura)', example: '2026-05-10' })
   fecha: string;
 
-  @ApiProperty({ description: 'Hectáreas afectadas (debe ser mayor que 0)', example: 12.5 })
-  hectareas: number;
+  @ApiProperty({ description: 'Hectáreas afectadas (mayor que 0, hasta 2 decimales)', example: 12.5 })
+  hectareasAfectadas: number;
 }
