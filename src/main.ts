@@ -5,6 +5,10 @@ import { AppModule } from './app.module.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+// Configuración de Swagger
+  const config = new DocumentBuilder()
+    .setTitle('API Sanidad Vegetal')
+    .setDescription('Documentación interactiva de la API')
   const configuracion = new DocumentBuilder()
     .setTitle('API de Sanidad Vegetal')
     .setDescription('API de Breaze in the Moon para gestionar plantas, patógenos, enfermedades, tratamientos, cultivos y brotes')
