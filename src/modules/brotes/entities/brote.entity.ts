@@ -5,18 +5,23 @@ export class Brote {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'int' })
   plantaId: number;
 
-  @Column()
+  @Column({ type: 'int' })
   enfermedadId: number;
-
-  @Column({ length: 100 })
-  region: string;
 
   @Column({ type: 'date' })
   fecha: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  hectareas: number;
+  @Column({ type: 'varchar', length: 100 })
+  region: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: { to: (valor: number) => valor, from: (valor: string) => Number(valor) },
+  })
+  hectareasAfectadas: number;
 }

@@ -9,6 +9,7 @@ import {
   validarId,
   validarIdTexto,
   validarTexto,
+  validarFormatoFecha
 } from '../../common/validaciones.js';
 import { ActualizarBroteDto } from './dto/actualizar-brote.dto.js';
 import { CrearBroteDto } from './dto/crear-brote.dto.js';
@@ -19,8 +20,11 @@ function validarHectareas(valor: unknown, campo: string): ErrorValidacion {
   if (valor === undefined || valor === null) {
     return `El campo ${campo} es obligatorio`;
   }
-  if (typeof valor !== 'number' || isNaN(valor) || valor <= 0) {
+  if (typeof valor !== 'number' || !Number.isFinite(valor) || valor <= 0) {
     return `El campo ${campo} debe ser un número mayor que cero`;
+  }
+  if (valor > 99999999.99) {
+    return `El campo ${campo} no puede ser mayor que 99999999.99`;
   }
   return null;
 }
@@ -28,7 +32,7 @@ function validarHectareas(valor: unknown, campo: string): ErrorValidacion {
 @ApiTags('brotes')
 @Controller('brotes')
 export class BrotesController {
-  constructor(private readonly brotesService: BrotesService) {}
+  constructor(private readonly brotesService: BrotesService) { }
 
   @Post()
   @ApiOperation({ summary: 'Registrar un nuevo brote de enfermedad' })
@@ -43,7 +47,7 @@ export class BrotesController {
       validarId(datos.enfermedadId, 'enfermedadId'),
       validarTexto(datos.region, 'region', 100),
       validarFecha(datos.fecha, 'fecha'),
-      validarHectareas(datos.hectareas, 'hectareas'),
+      validarHectareas(datos.hectareasAfectadas, 'hectareasAfectadas'),
     ]);
     return this.brotesService.crear(datos);
   }
@@ -52,17 +56,17 @@ export class BrotesController {
   @ApiOperation({ summary: 'Listar brotes con filtros opcionales (por planta, enfermedad, región o rango de fechas)' })
   @ApiQuery({ name: 'plantaId', required: false, description: 'Id de la planta' })
   @ApiQuery({ name: 'enfermedadId', required: false, description: 'Id de la enfermedad' })
-  @ApiQuery({ name: 'region', required: false, description: 'Filtro por región' })
-  @ApiQuery({ name: 'fechaInicio', required: false, description: 'Fecha inicio en rango (YYYY-MM-DD)' })
-  @ApiQuery({ name: 'fechaFin', required: false, description: 'Fecha fin en rango (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'region', required: false, description: 'Busca dentro de la región' })
+  @ApiQuery({ name: 'desde', required: false, description: 'Fecha mínima del brote (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'hasta', required: false, description: 'Fecha máxima del brote (YYYY-MM-DD)' })
   @ApiResponse({ status: 200, description: 'Lista de brotes' })
-  @ApiResponse({ status: 400, description: 'Un filtro o fecha es inválido' })
+  @ApiResponse({ status: 400, description: 'Un filtro es inválido o desde es posterior a hasta' })
   obtenerBrotes(
     @Query('plantaId') plantaId?: string,
     @Query('enfermedadId') enfermedadId?: string,
     @Query('region') region?: string,
-    @Query('fechaInicio') fechaInicio?: string,
-    @Query('fechaFin') fechaFin?: string,
+    @Query('desde') desde?: string,
+    @Query('hasta') hasta?: string,
   ) {
     const errores: ErrorValidacion[] = [];
     if (plantaId !== undefined) {
@@ -74,11 +78,11 @@ export class BrotesController {
     if (region !== undefined) {
       errores.push(validarTexto(region, 'region'));
     }
-    if (fechaInicio !== undefined) {
-      errores.push(validarFecha(fechaInicio, 'fechaInicio'));
-    }
-    if (fechaFin !== undefined) {
-      errores.push(validarFecha(fechaFin, 'fechaFin'));
+    const errorDesde = desde === undefined ? null : validarFormatoFecha(desde, 'desde');
+    const errorHasta = hasta === undefined ? null : validarFormatoFecha(hasta, 'hasta');
+    errores.push(errorDesde, errorHasta);
+    if (desde !== undefined && hasta !== undefined && !errorDesde && !errorHasta && desde > hasta) {
+      errores.push(`El filtro desde (${desde}) no puede ser posterior a hasta (${hasta})`);
     }
     lanzarSiHayErrores(errores);
 
@@ -86,8 +90,8 @@ export class BrotesController {
       plantaId !== undefined ? Number(plantaId) : undefined,
       enfermedadId !== undefined ? Number(enfermedadId) : undefined,
       region,
-      fechaInicio,
-      fechaFin,
+      desde,
+      hasta,
     );
   }
 
@@ -136,8 +140,8 @@ export class BrotesController {
     if (dto.fecha !== undefined) {
       errores.push(validarFecha(dto.fecha, 'fecha'));
     }
-    if (dto.hectareas !== undefined) {
-      errores.push(validarHectareas(dto.hectareas, 'hectareas'));
+    if (dto.hectareasAfectadas !== undefined) {
+      errores.push(validarHectareas(dto.hectareasAfectadas, 'hectareasAfectadas'));
     }
     lanzarSiHayErrores(errores);
 

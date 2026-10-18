@@ -17,7 +17,7 @@ export class BrotesService {
     private readonly plantaRepository: Repository<Planta>,
     @InjectRepository(Enfermedad)
     private readonly enfermedadRepository: Repository<Enfermedad>,
-  ) {}
+  ) { }
 
   private async verificarReferencias(plantaId?: number, enfermedadId?: number) {
     if (plantaId !== undefined) {
@@ -36,7 +36,13 @@ export class BrotesService {
 
   async crear(dto: CrearBroteDto) {
     await this.verificarReferencias(dto.plantaId, dto.enfermedadId);
-    const brote = this.broteRepository.create(dto);
+    const brote = this.broteRepository.create({
+      plantaId: dto.plantaId,
+      enfermedadId: dto.enfermedadId,
+      fecha: dto.fecha,
+      region: dto.region.trim(),
+      hectareasAfectadas: dto.hectareasAfectadas,
+    });
     return this.broteRepository.save(brote);
   }
 
@@ -44,8 +50,8 @@ export class BrotesService {
     plantaId?: number,
     enfermedadId?: number,
     region?: string,
-    fechaInicio?: string,
-    fechaFin?: string,
+    desde?: string,
+    hasta?: string,
   ) {
     const query = this.broteRepository.createQueryBuilder('brote');
 
@@ -56,13 +62,13 @@ export class BrotesService {
       query.andWhere('brote.enfermedadId = :enfermedadId', { enfermedadId });
     }
     if (region !== undefined) {
-      query.andWhere('LOWER(brote.region) LIKE LOWER(:region)', { region: `%${region}%` });
+      query.andWhere('LOWER(brote.region) LIKE LOWER(:region)', { region: `%${region.trim()}%` });
     }
-    if (fechaInicio !== undefined) {
-      query.andWhere('brote.fecha >= :fechaInicio', { fechaInicio });
+    if (desde !== undefined) {
+      query.andWhere('brote.fecha >= :desde', { desde });
     }
-    if (fechaFin !== undefined) {
-      query.andWhere('brote.fecha <= :fechaFin', { fechaFin });
+    if (hasta !== undefined) {
+      query.andWhere('brote.fecha <= :hasta', { hasta });
     }
 
     return query.orderBy('brote.fecha', 'DESC').getMany();
@@ -77,10 +83,26 @@ export class BrotesService {
   }
 
   async actualizar(id: number, dto: ActualizarBroteDto) {
-    await this.obtener(id);
+    const brote = await this.obtener(id);
     await this.verificarReferencias(dto.plantaId, dto.enfermedadId);
-    await this.broteRepository.update(id, dto);
-    return this.obtener(id);
+
+    if (dto.plantaId !== undefined) {
+      brote.plantaId = dto.plantaId;
+    }
+    if (dto.enfermedadId !== undefined) {
+      brote.enfermedadId = dto.enfermedadId;
+    }
+    if (dto.fecha !== undefined) {
+      brote.fecha = dto.fecha;
+    }
+    if (dto.region !== undefined) {
+      brote.region = dto.region.trim();
+    }
+    if (dto.hectareasAfectadas !== undefined) {
+      brote.hectareasAfectadas = dto.hectareasAfectadas;
+    }
+
+    return this.broteRepository.save(brote);
   }
 
   async eliminar(id: number) {
@@ -104,7 +126,7 @@ export class BrotesService {
 
       for (const brote of brotes) {
         const clave = getClave(brote) || 'Sin especificar';
-        const hectareas = Number(brote.hectareas) || 0;
+        const hectareas = brote.hectareasAfectadas;
 
         if (!mapa.has(clave)) {
           mapa.set(clave, { totalBrotes: 0, totalHectareas: 0 });
