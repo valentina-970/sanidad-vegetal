@@ -8,6 +8,8 @@ import { PatogenosModule } from './modules/patogenos/patogenos.module.js';
 import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
 import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibilidades.module';
 import { CultivosModule } from './modules/cultivos/cultivos.module';
+import { BrotesModule } from './modules/brotes/brotes.module';
+
 
 @Module({
   imports: [
