@@ -1,0 +1,16 @@
+meta {
+  name: Obtener Estadisticas de Brotes
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/estadisticas/brotes
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  forwardAuthorizationHeader: false
+}

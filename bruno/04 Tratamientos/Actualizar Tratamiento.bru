@@ -1,0 +1,23 @@
+meta {
+  name: Actualizar Tratamiento
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:3000/tratamientos/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "dosis": "3.0 g/L"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}
