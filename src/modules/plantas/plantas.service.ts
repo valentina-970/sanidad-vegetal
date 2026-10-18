@@ -1,15 +1,27 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { ActualizarPlantaDto } from './dto/actualizar-planta.dto.js';
 import { CrearPlantaDto } from './dto/crear-planta.dto.js';
 import { Planta } from './entities/plantas.entity.js';
+import { Cultivo } from '../cultivos/entities/cultivos.entity.js';
+import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
+import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity.js';
+import { EnfermedadConNivelDto, FichaPlantaDto } from './dto/ficha-planta.dto.js';
+
+const ORDEN_NIVEL: Record<string, number> = { alta: 0, media: 1, baja: 2 };
 
 @Injectable()
 export class PlantasService {
     constructor(
         @InjectRepository(Planta)
         private readonly plantasRepository: Repository<Planta>,
+        @InjectRepository(Cultivo)
+        private readonly cultivosRepository: Repository<Cultivo>,
+        @InjectRepository(Susceptibilidad)
+        private readonly susceptibilidadesRepository: Repository<Susceptibilidad>,
+        @InjectRepository(Enfermedad)
+        private readonly enfermedadesRepository: Repository<Enfermedad>,
     ) { }
 
     async crear(datos: CrearPlantaDto): Promise<Planta> {
@@ -78,6 +90,41 @@ export class PlantasService {
         const planta = await this.obtener(id);
         await this.plantasRepository.remove(planta);
         return { mensaje: `Planta ${id} eliminada correctamente` };
+    }
+
+    async obtenerFicha(id: number): Promise<FichaPlantaDto> {
+        const planta = await this.obtener(id);
+
+        const cultivos = await this.cultivosRepository.find({
+            where: { plantaId: id },
+            order: { fechaSiembra: 'DESC' },
+        });
+        const susceptibilidades = await this.susceptibilidadesRepository.findBy({ plantaId: id });
+
+        const idsEnfermedades = susceptibilidades.map((s) => s.enfermedadId);
+        const enfermedadesEncontradas =
+            idsEnfermedades.length > 0
+                ? await this.enfermedadesRepository.findBy({ id: In(idsEnfermedades) })
+                : [];
+        const enfermedadesPorId = new Map(enfermedadesEncontradas.map((e) => [e.id, e]));
+
+        const enfermedades: EnfermedadConNivelDto[] = susceptibilidades.flatMap((s) => {
+            const enfermedad = enfermedadesPorId.get(s.enfermedadId);
+            if (!enfermedad) {
+                return [];
+            }
+            return [{
+                enfermedadId: enfermedad.id,
+                nombre: enfermedad.nombre,
+                sintomas: enfermedad.sintomas,
+                epocaRiesgo: enfermedad.epocaRiesgo,
+                patogenoId: enfermedad.patogenoId,
+                nivel: s.nivel,
+            }];
+        });
+        enfermedades.sort((a, b) => ORDEN_NIVEL[a.nivel] - ORDEN_NIVEL[b.nivel]);
+
+        return { planta, cultivos, enfermedades };
     }
 
     private async verificarNombreCientificoLibre(nombreCientifico: string): Promise<void> {
