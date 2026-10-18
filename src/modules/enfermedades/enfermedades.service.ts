@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto';
@@ -7,6 +7,8 @@ import { Enfermedad } from './entities/enfermedades.entity';
 import { Patogeno } from '../patogenos/entities/patogenos.entity';
 import { Tratamiento } from '../tratamientos/entities/tratamientos.entity';
 import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto';
+import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity';
+import { Brote } from '../brotes/entities/brote.entity';
 
 @Injectable()
 export class EnfermedadesService {
@@ -17,6 +19,10 @@ export class EnfermedadesService {
     private readonly patogenosRepository: Repository<Patogeno>,
     @InjectRepository(Tratamiento)
     private readonly tratamientosRepository: Repository<Tratamiento>,
+    @InjectRepository(Susceptibilidad)
+    private readonly susceptibilidadesRepository: Repository<Susceptibilidad>,
+    @InjectRepository(Brote)
+    private readonly brotesRepository: Repository<Brote>,
   ) { }
 
   async crear(datos: CrearEnfermedadDto): Promise<Enfermedad> {
@@ -87,6 +93,14 @@ export class EnfermedadesService {
 
   async eliminar(id: number): Promise<{ mensaje: string }> {
     const enfermedad = await this.obtener(id);
+    const tratamientos = await this.tratamientosRepository.countBy({ enfermedadId: id });
+    const susceptibilidades = await this.susceptibilidadesRepository.countBy({ enfermedadId: id });
+    const brotes = await this.brotesRepository.countBy({ enfermedadId: id });
+    if (tratamientos + susceptibilidades + brotes > 0) {
+      throw new ConflictException(
+        `No se puede eliminar la enfermedad ${id}: tiene ${tratamientos} tratamiento(s), ${susceptibilidades} susceptibilidad(es) y ${brotes} brote(s) registrados`,
+      );
+    }
     await this.enfermedadesRepository.remove(enfermedad);
     return { mensaje: `Enfermedad ${id} eliminada correctamente` };
   }

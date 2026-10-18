@@ -82,6 +82,7 @@ export class EnfermedadesController {
     @ApiResponse({ status: 200, description: 'Enfermedad eliminada, con mensaje de confirmación' })
     @ApiResponse({ status: 400, description: 'El id no es un entero positivo' })
     @ApiResponse({ status: 404, description: 'No existe la enfermedad' })
+    @ApiResponse({ status: 409, description: 'La enfermedad tiene tratamientos, susceptibilidades o brotes asociados' })
     eliminarEnfermedad(@Param('id') id: string) {
         return this.enfermedadesService.eliminar(parsearIdRuta(id));
     }

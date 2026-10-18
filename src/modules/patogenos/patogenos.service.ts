@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { ActualizarPatogenoDto } from './dto/actualizar-patogeno.dto.js';
 import { CrearPatogenoDto } from './dto/crear-patogeno.dto.js';
 import { Patogeno } from './entities/patogenos.entity.js';
+import { Enfermedad } from '../enfermedades/entities/enfermedades.entity';
 
 @Injectable()
 export class PatogenosService {
   constructor(
     @InjectRepository(Patogeno)
+    @InjectRepository(Enfermedad)
     private readonly patogenosRepository: Repository<Patogeno>,
+    private readonly enfermedadesRepository: Repository<Enfermedad>,
   ) {}
 
   async crear(datos: CrearPatogenoDto): Promise<Patogeno> {
@@ -73,6 +76,12 @@ export class PatogenosService {
 
   async eliminar(id: number): Promise<{ mensaje: string }> {
     const patogeno = await this.obtener(id);
+    const enfermedades = await this.enfermedadesRepository.countBy({ patogenoId: id });
+    if (enfermedades > 0) {
+        throw new ConflictException(
+            `No se puede eliminar el patógeno ${id}: tiene ${enfermedades} enfermedad(es) asociada(s)`,
+        );
+    }
     await this.patogenosRepository.remove(patogeno);
     return { mensaje: `Patógeno ${id} eliminado correctamente` };
   }
