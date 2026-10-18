@@ -1,34 +1,43 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { Planta } from '../plantas/entities/plantas.entity.js';
 import { ActualizarBroteDto } from './dto/actualizar-brote.dto.js';
 import { CrearBroteDto } from './dto/crear-brote.dto.js';
+import { EstadisticasBrotesDto, ItemEstadisticaDto } from './dto/estadisticas-brotes.dto.js';
 import { Brote } from './entities/brote.entity.js';
 
 @Injectable()
 export class BrotesService {
   constructor(
     @InjectRepository(Brote)
-    private readonly brotesRepository: Repository<Brote>,
+    private readonly broteRepository: Repository<Brote>,
     @InjectRepository(Planta)
-    private readonly plantasRepository: Repository<Planta>,
+    private readonly plantaRepository: Repository<Planta>,
     @InjectRepository(Enfermedad)
-    private readonly enfermedadesRepository: Repository<Enfermedad>,
+    private readonly enfermedadRepository: Repository<Enfermedad>,
   ) {}
 
-  async crear(datos: CrearBroteDto): Promise<Brote> {
-    await this.verificarReferencias(datos.plantaId, datos.enfermedadId);
+  private async verificarReferencias(plantaId?: number, enfermedadId?: number) {
+    if (plantaId !== undefined) {
+      const existePlanta = await this.plantaRepository.existsBy({ id: plantaId });
+      if (!existePlanta) {
+        throw new NotFoundException(`No existe la planta con el id ${plantaId}`);
+      }
+    }
+    if (enfermedadId !== undefined) {
+      const existeEnfermedad = await this.enfermedadRepository.existsBy({ id: enfermedadId });
+      if (!existeEnfermedad) {
+        throw new NotFoundException(`No existe la enfermedad con el id ${enfermedadId}`);
+      }
+    }
+  }
 
-    const brote = this.brotesRepository.create({
-      plantaId: datos.plantaId,
-      enfermedadId: datos.enfermedadId,
-      region: datos.region,
-      fecha: datos.fecha,
-      hectareas: datos.hectareas,
-    });
-    return this.brotesRepository.save(brote);
+  async crear(dto: CrearBroteDto) {
+    await this.verificarReferencias(dto.plantaId, dto.enfermedadId);
+    const brote = this.broteRepository.create(dto);
+    return this.broteRepository.save(brote);
   }
 
   async listar(
@@ -37,70 +46,96 @@ export class BrotesService {
     region?: string,
     fechaInicio?: string,
     fechaFin?: string,
-  ): Promise<Brote[]> {
-    const filtros: FindOptionsWhere<Brote> = {};
+  ) {
+    const query = this.broteRepository.createQueryBuilder('brote');
 
     if (plantaId !== undefined) {
-      filtros.plantaId = plantaId;
+      query.andWhere('brote.plantaId = :plantaId', { plantaId });
     }
     if (enfermedadId !== undefined) {
-      filtros.enfermedadId = enfermedadId;
+      query.andWhere('brote.enfermedadId = :enfermedadId', { enfermedadId });
     }
     if (region !== undefined) {
-      filtros.region = region;
+      query.andWhere('LOWER(brote.region) LIKE LOWER(:region)', { region: `%${region}%` });
+    }
+    if (fechaInicio !== undefined) {
+      query.andWhere('brote.fecha >= :fechaInicio', { fechaInicio });
+    }
+    if (fechaFin !== undefined) {
+      query.andWhere('brote.fecha <= :fechaFin', { fechaFin });
     }
 
-    if (fechaInicio !== undefined && fechaFin !== undefined) {
-      filtros.fecha = Between(fechaInicio, fechaFin);
-    } else if (fechaInicio !== undefined) {
-      filtros.fecha = MoreThanOrEqual(fechaInicio);
-    } else if (fechaFin !== undefined) {
-      filtros.fecha = LessThanOrEqual(fechaFin);
-    }
-
-    return this.brotesRepository.find({ where: filtros });
+    return query.orderBy('brote.fecha', 'DESC').getMany();
   }
 
-  async obtener(id: number): Promise<Brote> {
-    const brote = await this.brotesRepository.findOneBy({ id });
+  async obtener(id: number) {
+    const brote = await this.broteRepository.findOne({ where: { id } });
     if (!brote) {
-      throw new NotFoundException(`No existe el brote con id ${id}`);
+      throw new NotFoundException(`No existe el brote con el id ${id}`);
     }
     return brote;
   }
 
-  async actualizar(id: number, datos: ActualizarBroteDto): Promise<Brote> {
-    const brote = await this.obtener(id);
-
-    if (datos.plantaId !== undefined || datos.enfermedadId !== undefined) {
-      await this.verificarReferencias(datos.plantaId, datos.enfermedadId);
-      if (datos.plantaId !== undefined) brote.plantaId = datos.plantaId;
-      if (datos.enfermedadId !== undefined) brote.enfermedadId = datos.enfermedadId;
-    }
-
-    if (datos.region !== undefined) brote.region = datos.region;
-    if (datos.fecha !== undefined) brote.fecha = datos.fecha;
-    if (datos.hectareas !== undefined) brote.hectareas = datos.hectareas;
-
-    return this.brotesRepository.save(brote);
+  async actualizar(id: number, dto: ActualizarBroteDto) {
+    await this.obtener(id);
+    await this.verificarReferencias(dto.plantaId, dto.enfermedadId);
+    await this.broteRepository.update(id, dto);
+    return this.obtener(id);
   }
 
-  async eliminar(id: number): Promise<{ mensaje: string }> {
-    const brote = await this.obtener(id);
-    await this.brotesRepository.remove(brote);
-    return { mensaje: `Brote ${id} eliminado correctamente` };
+  async eliminar(id: number) {
+    await this.obtener(id);
+    await this.broteRepository.delete(id);
+    return { mensaje: `Brote con id ${id} eliminado exitosamente` };
   }
 
-  private async verificarReferencias(plantaId?: number, enfermedadId?: number): Promise<void> {
-    const errores: string[] = [];
-    if (plantaId !== undefined && !(await this.plantasRepository.existsBy({ id: plantaId }))) {
-      errores.push(`No existe la planta con id ${plantaId}`);
-    }
-    if (enfermedadId !== undefined && !(await this.enfermedadesRepository.existsBy({ id: enfermedadId }))) {
-      errores.push(`No existe la enfermedad con id ${enfermedadId}`);
-    }
-    if (errores.length > 0) {
-      throw new NotFoundException(errores.join('. '));
-    }
+  async obtenerEstadisticas(): Promise<EstadisticasBrotesDto> {
+    const [brotes, plantas, enfermedades] = await Promise.all([
+      this.broteRepository.find(),
+      this.plantaRepository.find(),
+      this.enfermedadRepository.find(),
+    ]);
+
+    const mapaPlantas = new Map(plantas.map((p) => [p.id, p]));
+    const mapaEnfermedades = new Map(enfermedades.map((e) => [e.id, e]));
+
+    const agrupar = (getClave: (b: Brote) => string): ItemEstadisticaDto[] => {
+      const mapa = new Map<string, { totalBrotes: number; totalHectareas: number }>();
+
+      for (const brote of brotes) {
+        const clave = getClave(brote) || 'Sin especificar';
+        const hectareas = Number(brote.hectareas) || 0;
+
+        if (!mapa.has(clave)) {
+          mapa.set(clave, { totalBrotes: 0, totalHectareas: 0 });
+        }
+
+        const acumulado = mapa.get(clave)!;
+        acumulado.totalBrotes += 1;
+        acumulado.totalHectareas = Number((acumulado.totalHectareas + hectareas).toFixed(2));
+      }
+
+      return Array.from(mapa.entries()).map(([grupo, datos]) => ({
+        grupo,
+        totalBrotes: datos.totalBrotes,
+        totalHectareas: datos.totalHectareas,
+      }));
+    };
+
+    return {
+      porEnfermedad: agrupar(
+        (b) => mapaEnfermedades.get(b.enfermedadId)?.nombre || `Enfermedad #${b.enfermedadId}`,
+      ),
+      porPatogeno: agrupar((b) => {
+        const enf = mapaEnfermedades.get(b.enfermedadId) as Record<string, any> | undefined;
+        return enf?.patogeno || enf?.tipoAgente || 'No especificado';
+      }),
+      porRegion: agrupar((b) => b.region),
+      porCultivo: agrupar((b) => {
+        const p = mapaPlantas.get(b.plantaId) as Record<string, any> | undefined;
+        return p?.nombre || p?.nombreComun || `Planta #${b.plantaId}`;
+      }),
+      porMes: agrupar((b) => (b.fecha ? String(b.fecha).substring(0, 7) : 'Sin fecha')),
+    };
   }
 }

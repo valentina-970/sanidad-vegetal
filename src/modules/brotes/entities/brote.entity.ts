@@ -1,32 +1,22 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Enfermedad } from '../../enfermedades/entities/enfermedades.entity.js';
-import { Planta } from '../../plantas/entities/plantas.entity.js';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('brotes')
 export class Brote {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'planta_id' })
+  @Column()
   plantaId: number;
 
-  @Column({ name: 'enfermedad_id' })
+  @Column()
   enfermedadId: number;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ length: 100 })
   region: string;
 
-  @Column({ type: 'varchar', length: 10 })
+  @Column({ type: 'date' })
   fecha: string;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   hectareas: number;
-
-  @ManyToOne(() => Planta, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'planta_id' })
-  planta: Planta;
-
-  @ManyToOne(() => Enfermedad, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'enfermedad_id' })
-  enfermedad: Enfermedad;
 }
