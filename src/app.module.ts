@@ -10,6 +10,7 @@ import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibil
 import { CultivosModule } from './modules/cultivos/cultivos.module';
 import { BrotesModule } from './modules/brotes/brotes.module';
 import { TratamientosModule } from './modules/tratamientos/tratamientos.module.js';
+import { EstadisticasModule } from './modules/estadisticas/estadisticas.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { TratamientosModule } from './modules/tratamientos/tratamientos.module.j
     SusceptibilidadesModule,
     CultivosModule,
     TratamientosModule,
-    BrotesModule
+    BrotesModule,
+    EstadisticasModule
   ],
   controllers: [AppController],
   providers: [AppService],
