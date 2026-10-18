@@ -5,7 +5,6 @@ import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { Planta } from '../plantas/entities/plantas.entity.js';
 import { ActualizarBroteDto } from './dto/actualizar-brote.dto.js';
 import { CrearBroteDto } from './dto/crear-brote.dto.js';
-import { EstadisticasBrotesDto, ItemEstadisticaDto } from './dto/estadisticas-brotes.dto.js';
 import { Brote } from './entities/brote.entity.js';
 
 @Injectable()
@@ -109,55 +108,5 @@ export class BrotesService {
     await this.obtener(id);
     await this.broteRepository.delete(id);
     return { mensaje: `Brote con id ${id} eliminado exitosamente` };
-  }
-
-  async obtenerEstadisticas(): Promise<EstadisticasBrotesDto> {
-    const [brotes, plantas, enfermedades] = await Promise.all([
-      this.broteRepository.find(),
-      this.plantaRepository.find(),
-      this.enfermedadRepository.find(),
-    ]);
-
-    const mapaPlantas = new Map(plantas.map((p) => [p.id, p]));
-    const mapaEnfermedades = new Map(enfermedades.map((e) => [e.id, e]));
-
-    const agrupar = (getClave: (b: Brote) => string): ItemEstadisticaDto[] => {
-      const mapa = new Map<string, { totalBrotes: number; totalHectareas: number }>();
-
-      for (const brote of brotes) {
-        const clave = getClave(brote) || 'Sin especificar';
-        const hectareas = brote.hectareasAfectadas;
-
-        if (!mapa.has(clave)) {
-          mapa.set(clave, { totalBrotes: 0, totalHectareas: 0 });
-        }
-
-        const acumulado = mapa.get(clave)!;
-        acumulado.totalBrotes += 1;
-        acumulado.totalHectareas = Number((acumulado.totalHectareas + hectareas).toFixed(2));
-      }
-
-      return Array.from(mapa.entries()).map(([grupo, datos]) => ({
-        grupo,
-        totalBrotes: datos.totalBrotes,
-        totalHectareas: datos.totalHectareas,
-      }));
-    };
-
-    return {
-      porEnfermedad: agrupar(
-        (b) => mapaEnfermedades.get(b.enfermedadId)?.nombre || `Enfermedad #${b.enfermedadId}`,
-      ),
-      porPatogeno: agrupar((b) => {
-        const enf = mapaEnfermedades.get(b.enfermedadId) as Record<string, any> | undefined;
-        return enf?.patogeno || enf?.tipoAgente || 'No especificado';
-      }),
-      porRegion: agrupar((b) => b.region),
-      porCultivo: agrupar((b) => {
-        const p = mapaPlantas.get(b.plantaId) as Record<string, any> | undefined;
-        return p?.nombre || p?.nombreComun || `Planta #${b.plantaId}`;
-      }),
-      porMes: agrupar((b) => (b.fecha ? String(b.fecha).substring(0, 7) : 'Sin fecha')),
-    };
   }
 }
