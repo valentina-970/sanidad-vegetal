@@ -5,6 +5,8 @@ import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto';
 import { ActualizarEnfermedadDto } from './dto/actualizar-enfermedades.dto';
 import { Enfermedad } from './entities/enfermedades.entity';
 import { Patogeno } from '../patogenos/entities/patogenos.entity';
+import { Tratamiento } from '../tratamientos/entities/tratamientos.entity';
+import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto';
 
 @Injectable()
 export class EnfermedadesService {
@@ -13,7 +15,9 @@ export class EnfermedadesService {
     private readonly enfermedadesRepository: Repository<Enfermedad>,
     @InjectRepository(Patogeno)
     private readonly patogenosRepository: Repository<Patogeno>,
-  ) {}
+    @InjectRepository(Tratamiento)
+    private readonly tratamientosRepository: Repository<Tratamiento>,
+  ) { }
 
   async crear(datos: CrearEnfermedadDto): Promise<Enfermedad> {
     await this.verificarPatogenoExiste(datos.patogenoId);
@@ -44,6 +48,21 @@ export class EnfermedadesService {
       throw new NotFoundException(`No existe la enfermedad con id ${id}`);
     }
     return enfermedad;
+  }
+  async obtenerDetalle(id: number): Promise<DetalleEnfermedadDto> {
+    const enfermedad = await this.obtener(id);
+
+    const patogeno = await this.patogenosRepository.findOneBy({ id: enfermedad.patogenoId });
+    if (!patogeno) {
+      throw new NotFoundException(`No existe el patógeno con id ${enfermedad.patogenoId}`);
+    }
+
+    const tratamientos = await this.tratamientosRepository.find({
+      where: { enfermedadId: id },
+      order: { id: 'ASC' },
+    });
+
+    return { enfermedad, patogeno, tratamientos };
   }
 
   async actualizar(id: number, datos: ActualizarEnfermedadDto): Promise<Enfermedad> {

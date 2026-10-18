@@ -12,6 +12,7 @@ import {
 } from '../../common/validaciones.js';
 import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto';
 import { ActualizarEnfermedadDto } from './dto/actualizar-enfermedades.dto';
+import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto';
 import { EnfermedadesService } from './enfermedades.service';
 
 const EPOCAS_RIESGO = ['primavera', 'verano', 'otono', 'invierno', 'todo_el_anio'];
@@ -46,6 +47,15 @@ export class EnfermedadesController {
     @ApiResponse({ status: 404, description: 'No existe la enfermedad' })
     obtenerEnfermedad(@Param('id') id: string) {
         return this.enfermedadesService.obtener(parsearIdRuta(id));
+    }
+    @Get(':id/detalle')
+    @ApiOperation({ summary: 'Detalle de una enfermedad: su patógeno y todos sus tratamientos' })
+    @ApiParam({ name: 'id', description: 'Id de la enfermedad' })
+    @ApiResponse({ status: 200, description: 'Detalle de la enfermedad', type: DetalleEnfermedadDto })
+    @ApiResponse({ status: 400, description: 'El id no es un entero positivo' })
+    @ApiResponse({ status: 404, description: 'No existe la enfermedad' })
+    obtenerDetalleEnfermedad(@Param('id') id: string) {
+        return this.enfermedadesService.obtenerDetalle(parsearIdRuta(id));
     }
 
     @Get('')
