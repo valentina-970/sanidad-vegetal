@@ -1,27 +1,27 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Susceptibilidade } from './entities/susceptibilidade.entity';
+import { Susceptibilidades} from './entities/susceptibilidade.entity';
 import { CreateSusceptibilidadeDto } from './dto/create-susceptibilidade.dto';
 import { UpdateSusceptibilidadeDto } from './dto/update-susceptibilidade.dto';
 
 @Injectable()
 export class SusceptibilidadesService {
   constructor(
-    @InjectRepository(Susceptibilidade)
-    private readonly susceptibilidadRepository: Repository<Susceptibilidade>,
+    @InjectRepository(Susceptibilidades)
+    private readonly susceptibilidadRepository: Repository<Susceptibilidades>,
   ) {}
 
-  async create(createDto: CreateSusceptibilidadeDto): Promise<Susceptibilidade> {
+  async create(createDto: CreateSusceptibilidadeDto): Promise<Susceptibilidades>{
     const susceptibilidad = this.susceptibilidadRepository.create(createDto);
     return await this.susceptibilidadRepository.save(susceptibilidad);
   }
 
-  async findAll(): Promise<Susceptibilidade[]> {
+  async findAll(): Promise<Susceptibilidades[]>{
     return await this.susceptibilidadRepository.find();
   }
 
-  async findOne(id: number): Promise<Susceptibilidade> {
+  async findOne(id: number): Promise<Susceptibilidades>{
     const susceptibilidad = await this.susceptibilidadRepository.findOneBy({ id });
     if (!susceptibilidad) {
       throw new NotFoundException(`Susceptibilidad con ID ${id} no encontrada`);
@@ -29,7 +29,7 @@ export class SusceptibilidadesService {
     return susceptibilidad;
   }
 
-  async update(id: number, updateDto: UpdateSusceptibilidadeDto): Promise<Susceptibilidade> {
+  async update(id: number, updateDto: UpdateSusceptibilidadeDto): Promise<Susceptibilidades>{
     const susceptibilidad = await this.findOne(id);
     this.susceptibilidadRepository.merge(susceptibilidad, updateDto);
     return await this.susceptibilidadRepository.save(susceptibilidad);

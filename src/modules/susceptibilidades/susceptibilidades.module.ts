@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { SusceptibilidadesService } from './susceptibilidades.service';
 import { SusceptibilidadesController } from './susceptibilidades.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Susceptibilidades } from './entities/susceptibilidade.entity';
+import { Susceptibilidades} from './entities/susceptibilidade.entity';
 
 @Module({
   controllers: [SusceptibilidadesController],
