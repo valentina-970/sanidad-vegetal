@@ -8,6 +8,7 @@ import { PatogenosModule } from './modules/patogenos/patogenos.module.js';
 import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
 import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibilidades.module';
 import { CultivosModule } from './modules/cultivos/cultivos.module';
+import { TratamientosModule } from './modules/tratamientos/tratamientos.module.js';
 
 @Module({
   imports: [
@@ -29,9 +30,10 @@ import { CultivosModule } from './modules/cultivos/cultivos.module';
     PatogenosModule,
     EnfermedadesModule,
     SusceptibilidadesModule,
-    CultivosModule
+    CultivosModule,
+    TratamientosModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
