@@ -124,6 +124,7 @@ export class PlantasController {
     @ApiResponse({ status: 200, description: 'Planta eliminada, con mensaje de confirmación' })
     @ApiResponse({ status: 400, description: 'El id no es un entero positivo' })
     @ApiResponse({ status: 404, description: 'No existe la planta' })
+    @ApiResponse({ status: 409, description: 'La planta tiene cultivos, susceptibilidades o brotes asociados' })
     eliminarPlanta(@Param('id') id: string) {
         return this.plantasService.eliminar(parsearIdRuta(id));
     }
