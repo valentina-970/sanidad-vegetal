@@ -8,8 +8,20 @@ import { Cultivo } from '../cultivos/entities/cultivos.entity.js';
 import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity.js';
 import { EnfermedadConNivelDto, FichaPlantaDto } from './dto/ficha-planta.dto.js';
+import { Brote } from '../brotes/entities/brote.entity.js';
 
 const ORDEN_NIVEL: Record<string, number> = { alta: 0, media: 1, baja: 2 };
+
+function contar(cantidad: number, singular: string, plural: string): string {
+    return `${cantidad} ${cantidad === 1 ? singular : plural}`;
+}
+
+function unirConY(partes: string[]): string {
+    if (partes.length === 1) {
+        return partes[0];
+    }
+    return `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}`;
+}
 
 @Injectable()
 export class PlantasService {
@@ -22,6 +34,8 @@ export class PlantasService {
         private readonly susceptibilidadesRepository: Repository<Susceptibilidad>,
         @InjectRepository(Enfermedad)
         private readonly enfermedadesRepository: Repository<Enfermedad>,
+        @InjectRepository(Brote)
+        private readonly brotesRepository: Repository<Brote>
     ) { }
 
     async crear(datos: CrearPlantaDto): Promise<Planta> {
@@ -88,6 +102,29 @@ export class PlantasService {
 
     async eliminar(id: number): Promise<{ mensaje: string }> {
         const planta = await this.obtener(id);
+
+        const [cultivos, susceptibilidades, brotes] = await Promise.all([
+            this.cultivosRepository.countBy({ plantaId: id }),
+            this.susceptibilidadesRepository.countBy({ plantaId: id }),
+            this.brotesRepository.countBy({ plantaId: id }),
+        ]);
+
+        const dependientes: string[] = [];
+        if (cultivos > 0) {
+            dependientes.push(contar(cultivos, 'cultivo', 'cultivos'));
+        }
+        if (susceptibilidades > 0) {
+            dependientes.push(contar(susceptibilidades, 'susceptibilidad', 'susceptibilidades'));
+        }
+        if (brotes > 0) {
+            dependientes.push(contar(brotes, 'brote', 'brotes'));
+        }
+        if (dependientes.length > 0) {
+            throw new ConflictException(
+                `No se puede eliminar la planta ${id} porque tiene registros asociados: ${unirConY(dependientes)}`,
+            );
+        }
+
         await this.plantasRepository.remove(planta);
         return { mensaje: `Planta ${id} eliminada correctamente` };
     }
