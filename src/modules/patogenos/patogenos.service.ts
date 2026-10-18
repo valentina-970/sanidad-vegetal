@@ -10,10 +10,10 @@ import { Enfermedad } from '../enfermedades/entities/enfermedades.entity';
 export class PatogenosService {
   constructor(
     @InjectRepository(Patogeno)
-    @InjectRepository(Enfermedad)
     private readonly patogenosRepository: Repository<Patogeno>,
+    @InjectRepository(Enfermedad)
     private readonly enfermedadesRepository: Repository<Enfermedad>,
-  ) {}
+  ) { }
 
   async crear(datos: CrearPatogenoDto): Promise<Patogeno> {
     const nombreCientifico = datos.nombreCientifico.trim();
@@ -78,9 +78,9 @@ export class PatogenosService {
     const patogeno = await this.obtener(id);
     const enfermedades = await this.enfermedadesRepository.countBy({ patogenoId: id });
     if (enfermedades > 0) {
-        throw new ConflictException(
-            `No se puede eliminar el patógeno ${id}: tiene ${enfermedades} enfermedad(es) asociada(s)`,
-        );
+      throw new ConflictException(
+        `No se puede eliminar el patógeno ${id}: tiene ${enfermedades} enfermedad(es) asociada(s)`,
+      );
     }
     await this.patogenosRepository.remove(patogeno);
     return { mensaje: `Patógeno ${id} eliminado correctamente` };
