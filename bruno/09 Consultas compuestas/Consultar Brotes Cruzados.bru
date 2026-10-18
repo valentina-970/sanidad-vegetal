@@ -1,0 +1,16 @@
+meta {
+  name: Consultar Brotes Cruzados
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/brotes/cruzados
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  forwardAuthorizationHeader: false
+}

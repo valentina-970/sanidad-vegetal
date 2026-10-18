@@ -1,0 +1,29 @@
+meta {
+  name: Crear Cultivo
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/cultivos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "plantaId": 1,
+    "ubicacion": "Lote Norte - Parcela 4",
+    "loteFinca": "Finca La Esperanza - Lote 4",
+    "region": "Andina",
+    "codigoGeneticoSemilla": "ACGT",
+    "fechaSiembra": "2026-03-01",
+    "areaHectareas": 5.5
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}
