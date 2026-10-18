@@ -73,6 +73,7 @@ export class PatogenosController {
     @ApiResponse({ status: 200, description: 'Patógeno eliminado, con mensaje de confirmación' })
     @ApiResponse({ status: 400, description: 'El id no es un entero positivo' })
     @ApiResponse({ status: 404, description: 'No existe el patógeno' })
+    @ApiResponse({ status: 409, description: 'El patógeno tiene enfermedades asociadas' })
     eliminarPatogeno(@Param('id') id: string) {
         return this.patogenosService.eliminar(parsearIdRuta(id));
     }
