@@ -6,9 +6,10 @@ import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades
 import { Planta } from './entities/plantas.entity.js';
 import { PlantasController } from './plantas.controller.js';
 import { PlantasService } from './plantas.service.js';
+import { Brote } from '../brotes/entities/brote.entity.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Planta, Cultivo, Susceptibilidad, Enfermedad])],
+  imports: [TypeOrmModule.forFeature([Planta, Cultivo, Susceptibilidad, Enfermedad, Brote])],
   controllers: [PlantasController],
   providers: [PlantasService],
 })
