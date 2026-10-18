@@ -12,6 +12,7 @@ import {
 import { ActualizarPlantaDto } from './dto/actualizar-planta.dto.js';
 import { CrearPlantaDto } from './dto/crear-planta.dto.js';
 import { PlantasService } from './plantas.service.js';
+import { FichaPlantaDto } from './dto/ficha-planta.dto.js';
 
 const TIPOS_CULTIVO = ['hortaliza', 'frutal', 'cereal', 'ornamental', 'otro'];
 
@@ -72,6 +73,16 @@ export class PlantasController {
     @ApiResponse({ status: 404, description: 'No existe la planta' })
     obtenerPlanta(@Param('id') id: string) {
         return this.plantasService.obtener(parsearIdRuta(id));
+    }
+
+    @Get(':id/ficha')
+    @ApiOperation({ summary: 'Ficha de una planta: sus cultivos y las enfermedades que la afectan con su nivel de susceptibilidad' })
+    @ApiParam({ name: 'id', description: 'Id de la planta' })
+    @ApiResponse({ status: 200, description: 'Ficha de la planta', type: FichaPlantaDto })
+    @ApiResponse({ status: 400, description: 'El id no es un entero positivo' })
+    @ApiResponse({ status: 404, description: 'No existe la planta' })
+    obtenerFicha(@Param('id') id: string) {
+        return this.plantasService.obtenerFicha(parsearIdRuta(id));
     }
 
     @Patch(':id')
