@@ -9,7 +9,6 @@ import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
 import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibilidades.module';
 import { CultivosModule } from './modules/cultivos/cultivos.module';
 import { BrotesModule } from './modules/brotes/brotes.module';
-
 import { TratamientosModule } from './modules/tratamientos/tratamientos.module.js';
 
 @Module({
@@ -33,7 +32,8 @@ import { TratamientosModule } from './modules/tratamientos/tratamientos.module.j
     EnfermedadesModule,
     SusceptibilidadesModule,
     CultivosModule,
-    TratamientosModule
+    TratamientosModule,
+    BrotesModule
   ],
   controllers: [AppController],
   providers: [AppService],
