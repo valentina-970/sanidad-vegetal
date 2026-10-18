@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Planta } from '../plantas/entities/plantas.entity.js';
 import { ActualizarCultivoDto } from './dto/actualizar-cultivo.dto.js';
 import { CrearCultivoDto } from './dto/crear-cultivo.dto.js';
 import { Cultivo } from './entities/cultivos.entity.js';
+import { MutacionDto, ResultadoMutacionesDto } from './dto/resultado-mutaciones.dto.js';
 
 @Injectable()
 export class CultivosService {
@@ -81,6 +82,40 @@ export class CultivosService {
         const cultivo = await this.obtener(id);
         await this.cultivosRepository.remove(cultivo);
         return { mensaje: `Cultivo ${id} eliminado correctamente` };
+    }
+
+    async verificarMutaciones(id: number): Promise<ResultadoMutacionesDto> {
+        const cultivo = await this.obtener(id);
+
+        const planta = await this.plantasRepository.findOneBy({ id: cultivo.plantaId });
+        if (!planta) {
+            throw new NotFoundException(
+                `No existe la planta con id ${cultivo.plantaId} asociada al cultivo ${id}`,
+            );
+        }
+
+        const referencia = planta.secuenciaGenetica;
+        const semilla = cultivo.codigoGeneticoSemilla;
+        if (referencia.length !== semilla.length) {
+            throw new UnprocessableEntityException(
+                `No se pueden comparar las secuencias del cultivo ${id}: la secuencia de la planta ${planta.id} tiene ${referencia.length} bases y el código genético de la semilla tiene ${semilla.length}`,
+            );
+        }
+
+        const mutaciones: MutacionDto[] = [];
+        for (let i = 0; i < referencia.length; i++) {
+            if (referencia[i] !== semilla[i]) {
+                mutaciones.push({ posicion: i + 1, referencia: referencia[i], semilla: semilla[i] });
+            }
+        }
+
+        return {
+            cultivoId: cultivo.id,
+            plantaId: planta.id,
+            longitud: referencia.length,
+            totalMutaciones: mutaciones.length,
+            mutaciones,
+        };
     }
 
     private async verificarPlantaExiste(plantaId: number): Promise<void> {

@@ -14,6 +14,7 @@ import {
 } from '../../common/validaciones.js';
 import { ActualizarCultivoDto } from './dto/actualizar-cultivo.dto.js';
 import { CrearCultivoDto } from './dto/crear-cultivo.dto.js';
+import { ResultadoMutacionesDto } from './dto/resultado-mutaciones.dto.js';
 import { CultivosService } from './cultivos.service.js';
 
 @ApiTags('cultivos')
@@ -83,6 +84,17 @@ export class CultivosController {
     @ApiResponse({ status: 404, description: 'No existe el cultivo' })
     obtenerCultivo(@Param('id') id: string) {
         return this.cultivosService.obtener(parsearIdRuta(id));
+    }
+
+    @Get(':id/mutaciones')
+    @ApiOperation({ summary: 'Compara el código genético de la semilla con la secuencia de su planta' })
+    @ApiParam({ name: 'id', description: 'Id del cultivo' })
+    @ApiResponse({ status: 200, description: 'Número y posiciones de las mutaciones', type: ResultadoMutacionesDto })
+    @ApiResponse({ status: 400, description: 'El id no es un entero positivo' })
+    @ApiResponse({ status: 404, description: 'No existe el cultivo o la planta asociada' })
+    @ApiResponse({ status: 422, description: 'Las secuencias tienen distinta longitud y no se pueden comparar' })
+    verificarMutaciones(@Param('id') id: string) {
+        return this.cultivosService.verificarMutaciones(parsearIdRuta(id));
     }
 
     @Patch(':id')
