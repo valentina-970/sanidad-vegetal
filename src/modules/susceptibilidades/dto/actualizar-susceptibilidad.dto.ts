@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateSusceptibilidadeDto } from './create-susceptibilidade.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateSusceptibilidadeDto extends PartialType(CreateSusceptibilidadeDto) {}
+export class ActualizarSusceptibilidadDto {
+    @ApiProperty({ description: 'Id de la planta (debe existir)', required: false })
+    plantaId?: number;
+
+    @ApiProperty({ description: 'Id de la enfermedad (debe existir)', required: false })
+    enfermedadId?: number;
+
+    @ApiProperty({ description: 'Valores permitidos: baja, media, alta', required: false })
+    nivel?: string;
+}

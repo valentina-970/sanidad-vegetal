@@ -1,20 +1,12 @@
-import {ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateSusceptibilidadeDto {
-    @ApiProperty({ example: 1, description: 'ID de la planta' })
-    @IsNumber()
-    @IsNotEmpty()
+export class CrearSusceptibilidadDto {
+    @ApiProperty({ description: 'Id de la planta (debe existir)', example: 1 })
     plantaId: number;
 
-    @ApiProperty({ example: 1, description: 'ID de la enfermedad' })
-    @IsNumber()
-    @IsNotEmpty()
+    @ApiProperty({ description: 'Id de la enfermedad (debe existir)', example: 1 })
     enfermedadId: number;
 
-    @ApiProperty({ example: 'Alta', description: 'Nivel de susceptibilidad' })
-    @IsNumber()
-    @IsNotEmpty()
+    @ApiProperty({ description: 'Valores permitidos: baja, media, alta', example: 'alta' })
     nivel: string;
-
 }
