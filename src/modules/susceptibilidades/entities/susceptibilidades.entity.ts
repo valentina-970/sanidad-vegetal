@@ -1,16 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('susceptibilidades')
-export class Susceptibilidades{
+@Unique(['plantaId', 'enfermedadId'])
+export class Susceptibilidad {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: 'int' })
     plantaId: number;
 
-    @Column()
+    @Column({ type: 'int' })
     enfermedadId: number;
 
-    @Column()
+    @Column({ type: 'varchar', length: 10 })
     nivel: string;
 }
