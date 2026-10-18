@@ -12,6 +12,7 @@ import {
 } from '../../common/validaciones.js';
 import { ActualizarBroteDto } from './dto/actualizar-brote.dto.js';
 import { CrearBroteDto } from './dto/crear-brote.dto.js';
+import { EstadisticasBrotesDto } from './dto/estadisticas-brotes.dto.js';
 import { BrotesService } from './brotes.service.js';
 
 function validarHectareas(valor: unknown, campo: string): ErrorValidacion {
@@ -88,6 +89,17 @@ export class BrotesController {
       fechaInicio,
       fechaFin,
     );
+  }
+
+  @Get('estadisticas')
+  @ApiOperation({ summary: 'Obtener estadísticas agregadas de brotes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Estadísticas agregadas por enfermedad, patógeno, región, cultivo y mes',
+    type: EstadisticasBrotesDto,
+  })
+  obtenerEstadisticas() {
+    return this.brotesService.obtenerEstadisticas();
   }
 
   @Get(':id')
