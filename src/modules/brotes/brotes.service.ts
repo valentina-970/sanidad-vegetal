@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
+import { Patogeno } from '../patogenos/entities/patogenos.entity.js';
 import { Planta } from '../plantas/entities/plantas.entity.js';
 import { ActualizarBroteDto } from './dto/actualizar-brote.dto.js';
 import { CrearBroteDto } from './dto/crear-brote.dto.js';
@@ -16,6 +17,8 @@ export class BrotesService {
     private readonly plantaRepository: Repository<Planta>,
     @InjectRepository(Enfermedad)
     private readonly enfermedadRepository: Repository<Enfermedad>,
+    @InjectRepository(Patogeno)
+    private readonly patogenoRepository: Repository<Patogeno>,
   ) {}
 
   private async verificarReferencias(plantaId?: number, enfermedadId?: number) {
@@ -73,35 +76,26 @@ export class BrotesService {
     return query.orderBy('brote.fecha', 'DESC').getMany();
   }
 
-  async listarCruzados(region?: string, desde?: string, hasta?: string) {
+  async listarDetalle(region?: string, desde?: string, hasta?: string) {
     const brotes = await this.listar(undefined, undefined, region, desde, hasta);
 
-    const [plantas, enfermedades] = await Promise.all([
+    const [plantas, enfermedades, patogenos] = await Promise.all([
       this.plantaRepository.find(),
-      this.enfermedadRepository.find().catch(() => []),
+      this.enfermedadRepository.find(),
+      this.patogenoRepository.find(),
     ]);
-
-    const mapaPlantas = new Map(plantas.map((p) => [p.id, p]));
-    const mapaEnfermedades = new Map(enfermedades.map((e) => [e.id, e]));
+    const plantasPorId = new Map(plantas.map((p) => [p.id, p]));
+    const enfermedadesPorId = new Map(enfermedades.map((e) => [e.id, e]));
+    const patogenosPorId = new Map(patogenos.map((p) => [p.id, p]));
 
     return brotes.map((brote) => {
-      const planta = mapaPlantas.get(brote.plantaId) as Record<string, any> | undefined;
-      const enfermedad = mapaEnfermedades.get(brote.enfermedadId) as Record<string, any> | undefined;
-
-      const nombrePlanta = planta?.nombreComun || planta?.nombre || `Planta #${brote.plantaId}`;
-      const nombreEnfermedad = enfermedad?.nombre || `Enfermedad #${brote.enfermedadId}`;
-      const nombrePatogeno =
-        enfermedad?.patogeno?.nombre ||
-        enfermedad?.patogeno?.nombreCientifico ||
-        enfermedad?.patogeno ||
-        enfermedad?.tipoAgente ||
-        'No especificado';
-
+      const enfermedad = enfermedadesPorId.get(brote.enfermedadId);
+      const patogeno = enfermedad ? patogenosPorId.get(enfermedad.patogenoId) : undefined;
       return {
         ...brote,
-        nombrePlanta,
-        nombreEnfermedad,
-        nombrePatogeno,
+        nombrePlanta: plantasPorId.get(brote.plantaId)?.nombreComun ?? null,
+        nombreEnfermedad: enfermedad?.nombre ?? null,
+        nombrePatogeno: patogeno?.nombre ?? null,
       };
     });
   }
