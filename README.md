@@ -109,6 +109,7 @@ Las estadísticas aceptan `desde` y `hasta` (`YYYY-MM-DD`) y se ordenan de mayor
 
 - **Validaciones manuales** en `src/common/validaciones.ts`; no se usa class-validator. Un 400 lista todos los campos que fallaron.
 - **Sin relaciones de TypeORM**: las referencias son columnas con el id y las consultas compuestas se unen en el servicio.
+- **Servicios inyectados por token e interfaz**: cada módulo define `tokens.ts` y `<recurso>-service-interface.ts`; el controlador recibe la interfaz con `@Inject(TOKEN)` y el módulo la asocia a la clase con `{ provide: TOKEN, useClass: Servicio }`.
 - Nombre científico único en plantas y patógenos.
 - Una planta y una enfermedad solo pueden tener una susceptibilidad (`baja`, `media`, `alta`).
 - Las secuencias genéticas solo admiten A, C, G y T en mayúscula.
