@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     type ErrorValidacion,
@@ -13,14 +13,18 @@ import {
 import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto.js';
 import { ActualizarEnfermedadDto } from './dto/actualizar-enfermedades.dto.js';
 import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto.js';
-import { EnfermedadesService } from './enfermedades.service.js';
+import type { EnfermedadesServiceInterface } from './enfermedades-service-interface.js';
+import { ENFERMEDADES_SERVICE } from './tokens.js';
 
 const EPOCAS_RIESGO = ['primavera', 'verano', 'otono', 'invierno', 'todo_el_anio'];
 
 @ApiTags('enfermedades')
 @Controller('enfermedades')
 export class EnfermedadesController {
-    constructor(private readonly enfermedadesService: EnfermedadesService) {}
+    constructor(
+        @Inject(ENFERMEDADES_SERVICE)
+        private readonly enfermedadesService: EnfermedadesServiceInterface,
+    ) {}
 
     @Post('')
     @ApiOperation({ summary: 'Crear una enfermedad' })

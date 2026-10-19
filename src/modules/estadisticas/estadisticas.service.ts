@@ -6,9 +6,10 @@ import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { Patogeno } from '../patogenos/entities/patogenos.entity.js';
 import { Planta } from '../plantas/entities/plantas.entity.js';
 import { EstadisticaBrotesDto } from './dto/estadistica-brotes.dto.js';
+import type { EstadisticasServiceInterface } from './estadisticas-service-interface.js';
 
 @Injectable()
-export class EstadisticasService {
+export class EstadisticasService implements EstadisticasServiceInterface {
   constructor(
     @InjectRepository(Brote)
     private readonly brotesRepository: Repository<Brote>,

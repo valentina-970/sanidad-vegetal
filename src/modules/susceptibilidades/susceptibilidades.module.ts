@@ -5,10 +5,11 @@ import { Planta } from '../plantas/entities/plantas.entity.js';
 import { Susceptibilidad } from './entities/susceptibilidades.entity.js';
 import { SusceptibilidadesController } from './susceptibilidades.controller.js';
 import { SusceptibilidadesService } from './susceptibilidades.service.js';
+import { SUSCEPTIBILIDADES_SERVICE } from './tokens.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Susceptibilidad, Planta, Enfermedad])],
   controllers: [SusceptibilidadesController],
-  providers: [SusceptibilidadesService],
+  providers: [{ provide: SUSCEPTIBILIDADES_SERVICE, useClass: SusceptibilidadesService }],
 })
 export class SusceptibilidadesModule { }

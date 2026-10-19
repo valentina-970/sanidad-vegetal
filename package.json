@@ -1,6 +1,6 @@
 {
   "name": "sanidad-vegetal",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "API REST de sanidad vegetal: plantas, patógenos, enfermedades, tratamientos, cultivos, susceptibilidades y brotes",
   "author": "Grupo 4: Samuel Agudelo Chica, Valentina Salazar Cabra, Salomé Toro",
   "private": true,

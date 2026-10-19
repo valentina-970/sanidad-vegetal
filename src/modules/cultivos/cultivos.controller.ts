@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     type ErrorValidacion,
@@ -15,12 +15,16 @@ import {
 import { ActualizarCultivoDto } from './dto/actualizar-cultivo.dto.js';
 import { CrearCultivoDto } from './dto/crear-cultivo.dto.js';
 import { ResultadoMutacionesDto } from './dto/resultado-mutaciones.dto.js';
-import { CultivosService } from './cultivos.service.js';
+import type { CultivosServiceInterface } from './cultivos-service-interface.js';
+import { CULTIVOS_SERVICE } from './tokens.js';
 
 @ApiTags('cultivos')
 @Controller('cultivos')
 export class CultivosController {
-    constructor(private readonly cultivosService: CultivosService) { }
+    constructor(
+        @Inject(CULTIVOS_SERVICE)
+        private readonly cultivosService: CultivosServiceInterface,
+    ) {}
 
     @Post()
     @ApiOperation({ summary: 'Crear un cultivo' })

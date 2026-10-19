@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     type ErrorValidacion,
@@ -11,7 +11,8 @@ import {
 } from '../../common/validaciones.js';
 import { CrearPatogenoDto } from './dto/crear-patogeno.dto.js';
 import { ActualizarPatogenoDto } from './dto/actualizar-patogeno.dto.js';
-import { PatogenosService } from './patogenos.service.js';
+import type { PatogenosServiceInterface } from './patogenos-service-interface.js';
+import { PATOGENOS_SERVICE } from './tokens.js';
 
 const TIPOS_PATOGENO = ['virus', 'hongo', 'oomiceto', 'bacteria', 'insecto', 'nematodo'];
 const FORMAS_TRANSMISION = ['viento', 'agua', 'suelo', 'contacto', 'insectos_vectores', 'otro'];
@@ -19,7 +20,10 @@ const FORMAS_TRANSMISION = ['viento', 'agua', 'suelo', 'contacto', 'insectos_vec
 @ApiTags('patogenos')
 @Controller('patogenos')
 export class PatogenosController {
-    constructor(private readonly patogenosService: PatogenosService) {}
+    constructor(
+        @Inject(PATOGENOS_SERVICE)
+        private readonly patogenosService: PatogenosServiceInterface,
+    ) {}
 
     @Post('')
     @ApiOperation({ summary: 'Crear un patógeno' })

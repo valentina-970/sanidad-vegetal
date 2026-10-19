@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     type ErrorValidacion,
@@ -11,7 +11,8 @@ import {
 } from '../../common/validaciones.js';
 import { ActualizarPlantaDto } from './dto/actualizar-planta.dto.js';
 import { CrearPlantaDto } from './dto/crear-planta.dto.js';
-import { PlantasService } from './plantas.service.js';
+import type { PlantasServiceInterface } from './plantas-service-interface.js';
+import { PLANTAS_SERVICE } from './tokens.js';
 import { FichaPlantaDto } from './dto/ficha-planta.dto.js';
 
 const TIPOS_CULTIVO = ['hortaliza', 'frutal', 'cereal', 'ornamental', 'otro'];
@@ -19,7 +20,10 @@ const TIPOS_CULTIVO = ['hortaliza', 'frutal', 'cereal', 'ornamental', 'otro'];
 @ApiTags('plantas')
 @Controller('plantas')
 export class PlantasController {
-    constructor(private readonly plantasService: PlantasService) { }
+    constructor(
+        @Inject(PLANTAS_SERVICE)
+        private readonly plantasService: PlantasServiceInterface,
+    ) {}
 
     @Post()
     @ApiOperation({ summary: 'Crear una planta' })
