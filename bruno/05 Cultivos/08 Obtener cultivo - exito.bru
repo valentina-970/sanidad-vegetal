@@ -1,0 +1,15 @@
+meta {
+  name: 08 Obtener cultivo - exito
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/cultivos/{{cultivoId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

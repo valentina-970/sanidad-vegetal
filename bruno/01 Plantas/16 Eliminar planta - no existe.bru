@@ -1,0 +1,15 @@
+meta {
+  name: 16 Eliminar planta - no existe
+  type: http
+  seq: 16
+}
+
+delete {
+  url: {{baseUrl}}/plantas/999999
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

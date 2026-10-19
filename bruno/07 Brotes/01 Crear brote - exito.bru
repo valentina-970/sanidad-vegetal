@@ -1,0 +1,29 @@
+meta {
+  name: 01 Crear brote - exito
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 3,
+    "enfermedadId": 3,
+    "fecha": "2026-09-01",
+    "region": "Antioquia",
+    "hectareasAfectadas": 2.5
+  }
+}
+
+script:post-response {
+  bru.setVar("broteId", res.body.id);
+}
+
+assert {
+  res.status: eq 201
+}

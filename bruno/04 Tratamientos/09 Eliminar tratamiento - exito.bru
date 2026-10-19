@@ -1,0 +1,15 @@
+meta {
+  name: 09 Eliminar tratamiento - exito
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{baseUrl}}/tratamientos/{{tratamientoId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

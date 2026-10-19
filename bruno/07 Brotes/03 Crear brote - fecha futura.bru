@@ -1,0 +1,25 @@
+meta {
+  name: 03 Crear brote - fecha futura
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 3,
+    "enfermedadId": 3,
+    "fecha": "2030-01-01",
+    "region": "Antioquia",
+    "hectareasAfectadas": 2.5
+  }
+}
+
+assert {
+  res.status: eq 400
+}

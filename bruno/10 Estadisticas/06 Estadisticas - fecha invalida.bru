@@ -1,0 +1,15 @@
+meta {
+  name: 06 Estadisticas - fecha invalida
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/estadisticas/brotes/por-region?desde=05-2026
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

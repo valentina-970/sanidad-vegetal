@@ -1,0 +1,25 @@
+meta {
+  name: 04 Crear brote - referencias no existen
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 999999,
+    "enfermedadId": 999999,
+    "fecha": "2026-09-01",
+    "region": "Antioquia",
+    "hectareasAfectadas": 2.5
+  }
+}
+
+assert {
+  res.status: eq 404
+}

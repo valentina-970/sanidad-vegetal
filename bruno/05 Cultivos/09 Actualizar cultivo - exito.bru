@@ -1,0 +1,21 @@
+meta {
+  name: 09 Actualizar cultivo - exito
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{baseUrl}}/cultivos/{{cultivoId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "region": "Cauca"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,29 @@
+meta {
+  name: 01 Crear planta - exito
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/plantas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombreComun": "Lulo",
+    "nombreCientifico": "Solanum quitoense",
+    "familiaBotanica": "Solanaceae",
+    "tipoCultivo": "frutal",
+    "secuenciaGenetica": "ATGGCTAGCTAGGCTAACGT"
+  }
+}
+
+script:post-response {
+  bru.setVar("plantaId", res.body.id);
+}
+
+assert {
+  res.status: eq 201
+}

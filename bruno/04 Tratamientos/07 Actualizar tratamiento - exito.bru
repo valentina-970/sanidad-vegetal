@@ -1,0 +1,21 @@
+meta {
+  name: 07 Actualizar tratamiento - exito
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/tratamientos/{{tratamientoId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "tipo": "biologico"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,15 @@
+meta {
+  name: 07 Obtener patogeno - exito
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/patogenos/{{patogenoId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

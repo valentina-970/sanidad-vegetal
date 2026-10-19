@@ -1,0 +1,21 @@
+meta {
+  name: 13 Actualizar planta - no existe
+  type: http
+  seq: 13
+}
+
+patch {
+  url: {{baseUrl}}/plantas/999999
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombreComun": "Lulo"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

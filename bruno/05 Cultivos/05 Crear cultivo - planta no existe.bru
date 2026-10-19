@@ -1,0 +1,25 @@
+meta {
+  name: 05 Crear cultivo - planta no existe
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/cultivos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 999999,
+    "loteFinca": "Finca La Palma - Lote 1",
+    "region": "Huila",
+    "fechaSiembra": "2026-04-01",
+    "codigoGeneticoSemilla": "ATGCGCGATATCGCGTACGA"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

@@ -1,0 +1,15 @@
+meta {
+  name: 05 Estadisticas por mes
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/estadisticas/brotes/por-mes?desde=2026-01-01&hasta=2026-12-31
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

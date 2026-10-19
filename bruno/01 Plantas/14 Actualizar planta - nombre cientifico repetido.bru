@@ -1,0 +1,21 @@
+meta {
+  name: 14 Actualizar planta - nombre cientifico repetido
+  type: http
+  seq: 14
+}
+
+patch {
+  url: {{baseUrl}}/plantas/{{plantaId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombreCientifico": "Zea mays"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

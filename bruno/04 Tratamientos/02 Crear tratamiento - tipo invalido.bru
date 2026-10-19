@@ -1,0 +1,24 @@
+meta {
+  name: 02 Crear tratamiento - tipo invalido
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/tratamientos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Caldo bordelés",
+    "descripcionAplicacion": "Aspersión foliar preventiva cada 15 días en época de lluvias",
+    "tipo": "organico",
+    "enfermedadId": 1
+  }
+}
+
+assert {
+  res.status: eq 400
+}

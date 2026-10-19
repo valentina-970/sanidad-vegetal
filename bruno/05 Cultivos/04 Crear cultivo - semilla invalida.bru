@@ -1,0 +1,25 @@
+meta {
+  name: 04 Crear cultivo - semilla invalida
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/cultivos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 2,
+    "loteFinca": "Finca La Palma - Lote 1",
+    "region": "Huila",
+    "fechaSiembra": "2026-04-01",
+    "codigoGeneticoSemilla": "acgt"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

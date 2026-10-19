@@ -1,0 +1,15 @@
+meta {
+  name: 06 Detalle de brotes - rango invalido
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/brotes/detalle?desde=2026-05-01&hasta=2026-01-01
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}
