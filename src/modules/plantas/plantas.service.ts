@@ -10,11 +10,12 @@ import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades
 import { EnfermedadConNivelDto, FichaPlantaDto } from './dto/ficha-planta.dto.js';
 import { Brote } from '../brotes/entities/brote.entity.js';
 import { contar, unirConY } from '../../common/mensajes.js';
+import type { PlantasServiceInterface } from './plantas-service-interface.js';
 
 const ORDEN_NIVEL: Record<string, number> = { alta: 0, media: 1, baja: 2 };
 
 @Injectable()
-export class PlantasService {
+export class PlantasService implements PlantasServiceInterface {
     constructor(
         @InjectRepository(Planta)
         private readonly plantasRepository: Repository<Planta>,
