@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { ActualizarPatogenoDto } from './dto/actualizar-patogeno.dto.js';
 import { CrearPatogenoDto } from './dto/crear-patogeno.dto.js';
 import { Patogeno } from './entities/patogenos.entity.js';
-import { Enfermedad } from '../enfermedades/entities/enfermedades.entity';
+import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { contar } from '../../common/mensajes.js';
 
 @Injectable()

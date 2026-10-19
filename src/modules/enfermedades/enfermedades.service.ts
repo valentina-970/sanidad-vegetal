@@ -1,14 +1,14 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto';
-import { ActualizarEnfermedadDto } from './dto/actualizar-enfermedades.dto';
-import { Enfermedad } from './entities/enfermedades.entity';
-import { Patogeno } from '../patogenos/entities/patogenos.entity';
-import { Tratamiento } from '../tratamientos/entities/tratamientos.entity';
-import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto';
-import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity';
-import { Brote } from '../brotes/entities/brote.entity';
+import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto.js';
+import { ActualizarEnfermedadDto } from './dto/actualizar-enfermedades.dto.js';
+import { Enfermedad } from './entities/enfermedades.entity.js';
+import { Patogeno } from '../patogenos/entities/patogenos.entity.js';
+import { Tratamiento } from '../tratamientos/entities/tratamientos.entity.js';
+import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto.js';
+import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity.js';
+import { Brote } from '../brotes/entities/brote.entity.js';
 import { contar, unirConY } from '../../common/mensajes.js';
 
 @Injectable()

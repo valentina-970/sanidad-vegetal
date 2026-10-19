@@ -1,24 +1,23 @@
 {
   "name": "sanidad-vegetal",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.1",
+  "description": "API REST de sanidad vegetal: plantas, patógenos, enfermedades, tratamientos, cultivos, susceptibilidades y brotes",
+  "author": "Grupo 4: Samuel Agudelo Chica, Valentina Salazar Cabra, Salomé Toro",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
     "deploy": "nest deploy",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "oxlint src/ test/",
+    "lint": "oxlint src/",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

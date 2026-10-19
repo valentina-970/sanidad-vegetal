@@ -10,10 +10,10 @@ import {
     validarLista,
     validarTexto,
 } from '../../common/validaciones.js';
-import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto';
-import { ActualizarEnfermedadDto } from './dto/actualizar-enfermedades.dto';
-import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto';
-import { EnfermedadesService } from './enfermedades.service';
+import { CrearEnfermedadDto } from './dto/crear-enfermedades.dto.js';
+import { ActualizarEnfermedadDto } from './dto/actualizar-enfermedades.dto.js';
+import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto.js';
+import { EnfermedadesService } from './enfermedades.service.js';
 
 const EPOCAS_RIESGO = ['primavera', 'verano', 'otono', 'invierno', 'todo_el_anio'];
 
