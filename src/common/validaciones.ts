@@ -19,7 +19,7 @@ export function lanzarSiHayErrores(errores: ErrorValidacion[]): void {
 
 export function validarBodyNoVacio(body: unknown): void {
     if (typeof body !== 'object' || body === null || Array.isArray(body) || Object.keys(body).length === 0) {
-        throw new BadRequestException(['El cuerpo de la petición no puede estar vacio']);
+        throw new BadRequestException(['El cuerpo de la petición no puede estar vacío']);
     }
 }
 
@@ -33,7 +33,7 @@ export function validarSecuencia(valor: unknown, campo: string): ErrorValidacion
     }
 
     if (valor.trim().length === 0) {
-        return `El campo ${campo} no puede estar vacio`;
+        return `El campo ${campo} no puede estar vacío`;
     }
 
     if (!PATRON_SECUENCIA.test(valor)) {
@@ -117,12 +117,12 @@ export function validarFormatoFecha(valor: unknown, campo: string): ErrorValidac
     }
 
     if (typeof valor !== 'string') {
-        return `El campo ${campo} debe ser un texto con formato DD-MM-YYYY`;
+        return `El campo ${campo} debe ser un texto con formato YYYY-MM-DD`;
     }
 
     const partes = PATRON_FECHA.exec(valor);
     if (!partes) {
-        return `El campo ${campo} debe tener el formato DD-MM-YYYY (se recibió "${valor}")`;
+        return `El campo ${campo} debe tener el formato YYYY-MM-DD (se recibió "${valor}")`;
     }
 
     const anio = Number(partes[1]);
