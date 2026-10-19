@@ -9,19 +9,9 @@ import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity.js';
 import { EnfermedadConNivelDto, FichaPlantaDto } from './dto/ficha-planta.dto.js';
 import { Brote } from '../brotes/entities/brote.entity.js';
+import { contar, unirConY } from '../../common/mensajes.js';
 
 const ORDEN_NIVEL: Record<string, number> = { alta: 0, media: 1, baja: 2 };
-
-function contar(cantidad: number, singular: string, plural: string): string {
-    return `${cantidad} ${cantidad === 1 ? singular : plural}`;
-}
-
-function unirConY(partes: string[]): string {
-    if (partes.length === 1) {
-        return partes[0];
-    }
-    return `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}`;
-}
 
 @Injectable()
 export class PlantasService {
