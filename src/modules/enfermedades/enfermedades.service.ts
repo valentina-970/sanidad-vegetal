@@ -9,6 +9,7 @@ import { Tratamiento } from '../tratamientos/entities/tratamientos.entity';
 import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto';
 import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity';
 import { Brote } from '../brotes/entities/brote.entity';
+import { contar, unirConY } from '../../common/mensajes.js';
 
 @Injectable()
 export class EnfermedadesService {
@@ -93,14 +94,29 @@ export class EnfermedadesService {
 
   async eliminar(id: number): Promise<{ mensaje: string }> {
     const enfermedad = await this.obtener(id);
-    const tratamientos = await this.tratamientosRepository.countBy({ enfermedadId: id });
-    const susceptibilidades = await this.susceptibilidadesRepository.countBy({ enfermedadId: id });
-    const brotes = await this.brotesRepository.countBy({ enfermedadId: id });
-    if (tratamientos + susceptibilidades + brotes > 0) {
+
+    const [tratamientos, susceptibilidades, brotes] = await Promise.all([
+      this.tratamientosRepository.countBy({ enfermedadId: id }),
+      this.susceptibilidadesRepository.countBy({ enfermedadId: id }),
+      this.brotesRepository.countBy({ enfermedadId: id }),
+    ]);
+
+    const dependientes: string[] = [];
+    if (tratamientos > 0) {
+      dependientes.push(contar(tratamientos, 'tratamiento', 'tratamientos'));
+    }
+    if (susceptibilidades > 0) {
+      dependientes.push(contar(susceptibilidades, 'susceptibilidad', 'susceptibilidades'));
+    }
+    if (brotes > 0) {
+      dependientes.push(contar(brotes, 'brote', 'brotes'));
+    }
+    if (dependientes.length > 0) {
       throw new ConflictException(
-        `No se puede eliminar la enfermedad ${id}: tiene ${tratamientos} tratamiento(s), ${susceptibilidades} susceptibilidad(es) y ${brotes} brote(s) registrados`,
+        `No se puede eliminar la enfermedad ${id} porque tiene registros asociados: ${unirConY(dependientes)}`,
       );
     }
+
     await this.enfermedadesRepository.remove(enfermedad);
     return { mensaje: `Enfermedad ${id} eliminada correctamente` };
   }
