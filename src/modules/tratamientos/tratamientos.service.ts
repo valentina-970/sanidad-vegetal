@@ -5,9 +5,10 @@ import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { ActualizarTratamientoDto } from './dto/actualizar-tratamientos.dto.js';
 import { CrearTratamientoDto } from './dto/crear-tratamientos.dto.js';
 import { Tratamiento } from './entities/tratamientos.entity.js';
+import type { TratamientosServiceInterface } from './tratamientos-service-interface.js';
 
 @Injectable()
-export class TratamientosService {
+export class TratamientosService implements TratamientosServiceInterface {
   constructor(
     @InjectRepository(Tratamiento)
     private readonly tratamientosRepository: Repository<Tratamiento>,

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     type ErrorValidacion,
@@ -12,14 +12,18 @@ import {
 } from '../../common/validaciones.js';
 import { CrearTratamientoDto } from './dto/crear-tratamientos.dto.js';
 import { ActualizarTratamientoDto } from './dto/actualizar-tratamientos.dto.js';
-import { TratamientosService } from './tratamientos.service.js';
+import type { TratamientosServiceInterface } from './tratamientos-service-interface.js';
+import { TRATAMIENTOS_SERVICE } from './tokens.js';
 
 const TIPOS_TRATAMIENTO = ['quimico', 'biologico', 'cultural'];
 
 @ApiTags('tratamientos')
 @Controller('tratamientos')
 export class TratamientosController {
-    constructor(private readonly tratamientosService: TratamientosService) {}
+    constructor(
+        @Inject(TRATAMIENTOS_SERVICE)
+        private readonly tratamientosService: TratamientosServiceInterface,
+    ) {}
 
     @Post('')
     @ApiOperation({ summary: 'Crear un tratamiento' })
