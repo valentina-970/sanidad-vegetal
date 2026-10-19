@@ -5,6 +5,7 @@ import { ActualizarPatogenoDto } from './dto/actualizar-patogeno.dto.js';
 import { CrearPatogenoDto } from './dto/crear-patogeno.dto.js';
 import { Patogeno } from './entities/patogenos.entity.js';
 import { Enfermedad } from '../enfermedades/entities/enfermedades.entity';
+import { contar } from '../../common/mensajes.js';
 
 @Injectable()
 export class PatogenosService {
@@ -79,8 +80,9 @@ export class PatogenosService {
     const enfermedades = await this.enfermedadesRepository.countBy({ patogenoId: id });
     if (enfermedades > 0) {
       throw new ConflictException(
-        `No se puede eliminar el patógeno ${id}: tiene ${enfermedades} enfermedad(es) asociada(s)`,
+        `No se puede eliminar el patógeno ${id} porque tiene registros asociados: ${contar(enfermedades, 'enfermedad', 'enfermedades')}`,
       );
+
     }
     await this.patogenosRepository.remove(patogeno);
     return { mensaje: `Patógeno ${id} eliminado correctamente` };
