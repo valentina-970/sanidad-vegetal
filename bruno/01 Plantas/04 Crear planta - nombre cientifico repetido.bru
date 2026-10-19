@@ -1,0 +1,25 @@
+meta {
+  name: 04 Crear planta - nombre cientifico repetido
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/plantas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombreComun": "Lulo",
+    "nombreCientifico": "Zea mays",
+    "familiaBotanica": "Solanaceae",
+    "tipoCultivo": "frutal",
+    "secuenciaGenetica": "ATGGCTAGCTAGGCTAACGT"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

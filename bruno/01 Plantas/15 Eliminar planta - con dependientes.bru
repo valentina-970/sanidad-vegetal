@@ -1,0 +1,15 @@
+meta {
+  name: 15 Eliminar planta - con dependientes
+  type: http
+  seq: 15
+}
+
+delete {
+  url: {{baseUrl}}/plantas/1
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 409
+}

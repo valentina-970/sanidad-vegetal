@@ -1,0 +1,21 @@
+meta {
+  name: 09 Actualizar patogeno - exito
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{baseUrl}}/patogenos/{{patogenoId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "formaTransmision": "agua"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

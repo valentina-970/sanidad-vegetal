@@ -1,0 +1,15 @@
+meta {
+  name: 11 Eliminar enfermedad - exito
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{baseUrl}}/enfermedades/{{enfermedadId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

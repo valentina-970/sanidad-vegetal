@@ -1,0 +1,28 @@
+meta {
+  name: 01 Crear enfermedad - exito
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/enfermedades
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Marchitez por Fusarium",
+    "sintomas": "Amarillamiento foliar y marchitez progresiva",
+    "epocaRiesgo": "verano",
+    "patogenoId": 2
+  }
+}
+
+script:post-response {
+  bru.setVar("enfermedadId", res.body.id);
+}
+
+assert {
+  res.status: eq 201
+}

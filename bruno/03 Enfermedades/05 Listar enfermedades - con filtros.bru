@@ -1,0 +1,15 @@
+meta {
+  name: 05 Listar enfermedades - con filtros
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/enfermedades?epocaRiesgo=invierno&patogenoId=1
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

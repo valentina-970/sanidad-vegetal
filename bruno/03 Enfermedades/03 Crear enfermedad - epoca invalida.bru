@@ -1,0 +1,24 @@
+meta {
+  name: 03 Crear enfermedad - epoca invalida
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/enfermedades
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Marchitez por Fusarium",
+    "sintomas": "Amarillamiento foliar y marchitez progresiva",
+    "epocaRiesgo": "otoño",
+    "patogenoId": 2
+  }
+}
+
+assert {
+  res.status: eq 400
+}

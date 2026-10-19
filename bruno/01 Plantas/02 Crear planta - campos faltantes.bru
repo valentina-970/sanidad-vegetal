@@ -1,0 +1,19 @@
+meta {
+  name: 02 Crear planta - campos faltantes
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/plantas
+  body: json
+  auth: none
+}
+
+body:json {
+  {}
+}
+
+assert {
+  res.status: eq 400
+}

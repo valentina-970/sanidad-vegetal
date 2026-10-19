@@ -1,0 +1,25 @@
+meta {
+  name: 03 Crear planta - valores invalidos
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/plantas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombreComun": "Lulo",
+    "nombreCientifico": "Solanum betaceum",
+    "familiaBotanica": "Solanaceae",
+    "tipoCultivo": "Frutal",
+    "secuenciaGenetica": "acgx"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

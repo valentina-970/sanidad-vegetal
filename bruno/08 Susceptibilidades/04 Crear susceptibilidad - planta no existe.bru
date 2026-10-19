@@ -1,0 +1,23 @@
+meta {
+  name: 04 Crear susceptibilidad - planta no existe
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/susceptibilidades
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 999999,
+    "enfermedadId": 1,
+    "nivel": "baja"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

@@ -1,0 +1,25 @@
+meta {
+  name: 03 Crear patogeno - valores invalidos
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/patogenos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Hongo del marchitamiento",
+    "nombreCientifico": "Fusarium solani",
+    "tipo": "Hongo",
+    "formaTransmision": "aire",
+    "secuenciaGenetica": "ATCGGCTAAGCT"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

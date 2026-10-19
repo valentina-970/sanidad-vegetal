@@ -1,0 +1,15 @@
+meta {
+  name: 07 Listar plantas - filtro invalido
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/plantas?tipoCultivo=arbol
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

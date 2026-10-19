@@ -1,0 +1,23 @@
+meta {
+  name: 02 Crear susceptibilidad - repetida
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/susceptibilidades
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 1,
+    "enfermedadId": 1,
+    "nivel": "alta"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

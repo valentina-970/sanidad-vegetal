@@ -1,0 +1,28 @@
+meta {
+  name: 01 Crear tratamiento - exito
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/tratamientos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Caldo bordelés",
+    "descripcionAplicacion": "Aspersión foliar preventiva cada 15 días en época de lluvias",
+    "tipo": "quimico",
+    "enfermedadId": 1
+  }
+}
+
+script:post-response {
+  bru.setVar("tratamientoId", res.body.id);
+}
+
+assert {
+  res.status: eq 201
+}

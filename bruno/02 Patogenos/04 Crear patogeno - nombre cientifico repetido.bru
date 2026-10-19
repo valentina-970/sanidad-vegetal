@@ -1,0 +1,25 @@
+meta {
+  name: 04 Crear patogeno - nombre cientifico repetido
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/patogenos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Hongo del marchitamiento",
+    "nombreCientifico": "Hemileia vastatrix",
+    "tipo": "hongo",
+    "formaTransmision": "suelo",
+    "secuenciaGenetica": "ATCGGCTAAGCT"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

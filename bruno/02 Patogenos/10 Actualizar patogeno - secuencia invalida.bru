@@ -1,0 +1,21 @@
+meta {
+  name: 10 Actualizar patogeno - secuencia invalida
+  type: http
+  seq: 10
+}
+
+patch {
+  url: {{baseUrl}}/patogenos/{{patogenoId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "secuenciaGenetica": "ACGU"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

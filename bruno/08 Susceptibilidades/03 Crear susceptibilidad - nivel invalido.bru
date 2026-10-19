@@ -1,0 +1,23 @@
+meta {
+  name: 03 Crear susceptibilidad - nivel invalido
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/susceptibilidades
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 6,
+    "enfermedadId": 1,
+    "nivel": "Alta"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

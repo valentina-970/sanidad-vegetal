@@ -1,0 +1,29 @@
+meta {
+  name: 01 Crear patogeno - exito
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/patogenos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Hongo del marchitamiento",
+    "nombreCientifico": "Fusarium oxysporum",
+    "tipo": "hongo",
+    "formaTransmision": "suelo",
+    "secuenciaGenetica": "ATCGGCTAAGCT"
+  }
+}
+
+script:post-response {
+  bru.setVar("patogenoId", res.body.id);
+}
+
+assert {
+  res.status: eq 201
+}

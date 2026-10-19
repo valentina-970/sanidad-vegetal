@@ -1,0 +1,15 @@
+meta {
+  name: 09 Eliminar brote - exito
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{baseUrl}}/brotes/{{broteId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
