@@ -1,0 +1,21 @@
+meta {
+  name: 08 Actualizar brote - exito
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/brotes/{{broteId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "hectareasAfectadas": 3.75
+  }
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,21 @@
+meta {
+  name: 07 Actualizar susceptibilidad - pareja repetida
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/susceptibilidades/{{susceptibilidadId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 1
+  }
+}
+
+assert {
+  res.status: eq 409
+}

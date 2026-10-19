@@ -1,0 +1,15 @@
+meta {
+  name: 02 Ficha de planta - no existe
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/plantas/999999/ficha
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

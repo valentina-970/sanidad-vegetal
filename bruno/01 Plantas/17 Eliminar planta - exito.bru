@@ -1,0 +1,15 @@
+meta {
+  name: 17 Eliminar planta - exito
+  type: http
+  seq: 17
+}
+
+delete {
+  url: {{baseUrl}}/plantas/{{plantaId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

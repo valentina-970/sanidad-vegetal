@@ -1,0 +1,21 @@
+meta {
+  name: 06 Actualizar susceptibilidad - exito
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/susceptibilidades/{{susceptibilidadId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nivel": "media"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,25 @@
+meta {
+  name: 02 Crear brote - hectareas invalidas
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 3,
+    "enfermedadId": 3,
+    "fecha": "2026-09-01",
+    "region": "Antioquia",
+    "hectareasAfectadas": 0
+  }
+}
+
+assert {
+  res.status: eq 400
+}

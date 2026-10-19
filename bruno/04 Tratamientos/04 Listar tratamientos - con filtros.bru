@@ -1,0 +1,15 @@
+meta {
+  name: 04 Listar tratamientos - con filtros
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/tratamientos?tipo=biologico&enfermedadId=3
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

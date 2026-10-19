@@ -1,0 +1,21 @@
+meta {
+  name: 11 Actualizar planta - exito
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{baseUrl}}/plantas/{{plantaId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombreComun": "Lulo de Castilla"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

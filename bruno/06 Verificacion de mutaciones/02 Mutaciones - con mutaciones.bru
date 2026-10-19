@@ -1,0 +1,15 @@
+meta {
+  name: 02 Mutaciones - con mutaciones
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/cultivos/2/mutaciones
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

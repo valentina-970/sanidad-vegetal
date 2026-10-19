@@ -1,0 +1,15 @@
+meta {
+  name: 07 Listar cultivos - rango invalido
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/cultivos?desde=2026-05-01&hasta=2026-01-01
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

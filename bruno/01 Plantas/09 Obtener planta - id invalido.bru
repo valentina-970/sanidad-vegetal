@@ -1,0 +1,15 @@
+meta {
+  name: 09 Obtener planta - id invalido
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/plantas/abc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

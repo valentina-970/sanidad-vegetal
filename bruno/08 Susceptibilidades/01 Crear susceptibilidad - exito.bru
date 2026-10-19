@@ -1,0 +1,27 @@
+meta {
+  name: 01 Crear susceptibilidad - exito
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/susceptibilidades
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 6,
+    "enfermedadId": 1,
+    "nivel": "baja"
+  }
+}
+
+script:post-response {
+  bru.setVar("susceptibilidadId", res.body.id);
+}
+
+assert {
+  res.status: eq 201
+}

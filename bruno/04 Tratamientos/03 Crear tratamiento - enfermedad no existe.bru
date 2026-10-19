@@ -1,0 +1,24 @@
+meta {
+  name: 03 Crear tratamiento - enfermedad no existe
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/tratamientos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Caldo bordelés",
+    "descripcionAplicacion": "Aspersión foliar preventiva cada 15 días en época de lluvias",
+    "tipo": "quimico",
+    "enfermedadId": 999999
+  }
+}
+
+assert {
+  res.status: eq 404
+}

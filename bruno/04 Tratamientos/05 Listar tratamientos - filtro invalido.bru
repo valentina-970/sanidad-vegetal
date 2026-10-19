@@ -1,0 +1,15 @@
+meta {
+  name: 05 Listar tratamientos - filtro invalido
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/tratamientos?tipo=x
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

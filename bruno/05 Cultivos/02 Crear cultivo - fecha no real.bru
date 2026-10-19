@@ -1,0 +1,25 @@
+meta {
+  name: 02 Crear cultivo - fecha no real
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/cultivos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 2,
+    "loteFinca": "Finca La Palma - Lote 1",
+    "region": "Huila",
+    "fechaSiembra": "2026-02-30",
+    "codigoGeneticoSemilla": "ATGCGCGATATCGCGTACGA"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

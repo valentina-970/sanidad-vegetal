@@ -1,0 +1,15 @@
+meta {
+  name: 05 Mutaciones - id invalido
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/cultivos/abc/mutaciones
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

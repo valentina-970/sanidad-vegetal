@@ -1,0 +1,15 @@
+meta {
+  name: 04 Estadisticas por tipo de cultivo
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/estadisticas/brotes/por-tipo-cultivo
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

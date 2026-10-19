@@ -1,0 +1,15 @@
+meta {
+  name: 10 Obtener planta - no existe
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/plantas/999999
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

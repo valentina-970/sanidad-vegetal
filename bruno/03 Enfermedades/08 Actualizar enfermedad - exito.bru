@@ -1,0 +1,21 @@
+meta {
+  name: 08 Actualizar enfermedad - exito
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/enfermedades/{{enfermedadId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "sintomas": "Necrosis en tallo y marchitez foliar"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

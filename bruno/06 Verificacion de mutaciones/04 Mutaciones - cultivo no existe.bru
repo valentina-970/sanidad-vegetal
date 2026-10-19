@@ -1,0 +1,15 @@
+meta {
+  name: 04 Mutaciones - cultivo no existe
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/cultivos/999999/mutaciones
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}
