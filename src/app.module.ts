@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
-import { PlantasModule } from './modules/plantas/plantas.module';
+import { PlantasModule } from './modules/plantas/plantas.module.js';
 import { PatogenosModule } from './modules/patogenos/patogenos.module.js';
-import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module';
-import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibilidades.module';
-import { CultivosModule } from './modules/cultivos/cultivos.module';
-import { BrotesModule } from './modules/brotes/brotes.module';
+import { EnfermedadesModule } from './modules/enfermedades/enfermedades.module.js';
+import { SusceptibilidadesModule } from './modules/susceptibilidades/susceptibilidades.module.js';
+import { CultivosModule } from './modules/cultivos/cultivos.module.js';
+import { BrotesModule } from './modules/brotes/brotes.module.js';
 import { TratamientosModule } from './modules/tratamientos/tratamientos.module.js';
-import { EstadisticasModule } from './modules/estadisticas/estadisticas.module';
+import { EstadisticasModule } from './modules/estadisticas/estadisticas.module.js';
 
 @Module({
   imports: [
@@ -35,9 +33,7 @@ import { EstadisticasModule } from './modules/estadisticas/estadisticas.module';
     CultivosModule,
     TratamientosModule,
     BrotesModule,
-    EstadisticasModule
+    EstadisticasModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
