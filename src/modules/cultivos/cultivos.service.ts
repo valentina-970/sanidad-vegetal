@@ -6,9 +6,10 @@ import { ActualizarCultivoDto } from './dto/actualizar-cultivo.dto.js';
 import { CrearCultivoDto } from './dto/crear-cultivo.dto.js';
 import { Cultivo } from './entities/cultivos.entity.js';
 import { MutacionDto, ResultadoMutacionesDto } from './dto/resultado-mutaciones.dto.js';
+import type { CultivosServiceInterface } from './cultivos-service-interface.js';
 
 @Injectable()
-export class CultivosService {
+export class CultivosService implements CultivosServiceInterface {
     constructor(
         @InjectRepository(Cultivo)
         private readonly cultivosRepository: Repository<Cultivo>,
