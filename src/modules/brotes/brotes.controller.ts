@@ -6,6 +6,7 @@ import {
   parsearIdRuta,
   validarBodyNoVacio,
   validarFecha,
+  validarFormatoFecha,
   validarId,
   validarIdTexto,
   validarTexto,
@@ -18,10 +19,23 @@ function validarHectareas(valor: unknown, campo: string): ErrorValidacion {
   if (valor === undefined || valor === null) {
     return `El campo ${campo} es obligatorio`;
   }
-  if (typeof valor !== 'number' || isNaN(valor) || valor <= 0) {
+  if (typeof valor !== 'number' || !Number.isFinite(valor) || valor <= 0) {
     return `El campo ${campo} debe ser un número mayor que cero`;
   }
+  if (valor > 99999999.99) {
+    return `El campo ${campo} no puede ser mayor que 99999999.99`;
+  }
   return null;
+}
+
+function validarRangoFechas(desde?: string, hasta?: string): ErrorValidacion[] {
+  const errorDesde = desde === undefined ? null : validarFormatoFecha(desde, 'desde');
+  const errorHasta = hasta === undefined ? null : validarFormatoFecha(hasta, 'hasta');
+  const errores: ErrorValidacion[] = [errorDesde, errorHasta];
+  if (desde !== undefined && hasta !== undefined && !errorDesde && !errorHasta && desde > hasta) {
+    errores.push(`El filtro desde (${desde}) no puede ser posterior a hasta (${hasta})`);
+  }
+  return errores;
 }
 
 @ApiTags('brotes')
@@ -51,11 +65,11 @@ export class BrotesController {
   @ApiOperation({ summary: 'Listar brotes con filtros opcionales (por planta, enfermedad, región o rango de fechas)' })
   @ApiQuery({ name: 'plantaId', required: false, description: 'Id de la planta' })
   @ApiQuery({ name: 'enfermedadId', required: false, description: 'Id de la enfermedad' })
-  @ApiQuery({ name: 'region', required: false, description: 'Filtro por región' })
-  @ApiQuery({ name: 'desde', required: false, description: 'Fecha inicio en rango (YYYY-MM-DD)' })
-  @ApiQuery({ name: 'hasta', required: false, description: 'Fecha fin en rango (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'region', required: false, description: 'Busca dentro de la región' })
+  @ApiQuery({ name: 'desde', required: false, description: 'Fecha mínima del brote (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'hasta', required: false, description: 'Fecha máxima del brote (YYYY-MM-DD)' })
   @ApiResponse({ status: 200, description: 'Lista de brotes' })
-  @ApiResponse({ status: 400, description: 'Un filtro o fecha es inválido' })
+  @ApiResponse({ status: 400, description: 'Un filtro es inválido o desde es posterior a hasta' })
   obtenerBrotes(
     @Query('plantaId') plantaId?: string,
     @Query('enfermedadId') enfermedadId?: string,
@@ -73,12 +87,7 @@ export class BrotesController {
     if (region !== undefined) {
       errores.push(validarTexto(region, 'region'));
     }
-    if (desde !== undefined) {
-      errores.push(validarFecha(desde, 'desde'));
-    }
-    if (hasta !== undefined) {
-      errores.push(validarFecha(hasta, 'hasta'));
-    }
+    errores.push(...validarRangoFechas(desde, hasta));
     lanzarSiHayErrores(errores);
 
     return this.brotesService.listar(
@@ -90,13 +99,14 @@ export class BrotesController {
     );
   }
 
-  @Get('cruzados')
-  @ApiOperation({ summary: 'Consultar brotes con información cruzada de planta, enfermedad y patógeno' })
-  @ApiQuery({ name: 'region', required: false, description: 'Filtro por región' })
-  @ApiQuery({ name: 'desde', required: false, description: 'Fecha inicio en rango (YYYY-MM-DD)' })
-  @ApiQuery({ name: 'hasta', required: false, description: 'Fecha fin en rango (YYYY-MM-DD)' })
-  @ApiResponse({ status: 200, description: 'Lista de brotes con datos cruzados de planta, enfermedad y patógeno' })
-  obtenerBrotesCruzados(
+  @Get('detalle')
+  @ApiOperation({ summary: 'Brotes con el nombre de la planta, la enfermedad y el patógeno' })
+  @ApiQuery({ name: 'region', required: false, description: 'Busca dentro de la región' })
+  @ApiQuery({ name: 'desde', required: false, description: 'Fecha mínima del brote (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'hasta', required: false, description: 'Fecha máxima del brote (YYYY-MM-DD)' })
+  @ApiResponse({ status: 200, description: 'Brotes con nombres de planta, enfermedad y patógeno' })
+  @ApiResponse({ status: 400, description: 'Un filtro es inválido o desde es posterior a hasta' })
+  obtenerBrotesDetalle(
     @Query('region') region?: string,
     @Query('desde') desde?: string,
     @Query('hasta') hasta?: string,
@@ -105,15 +115,10 @@ export class BrotesController {
     if (region !== undefined) {
       errores.push(validarTexto(region, 'region'));
     }
-    if (desde !== undefined) {
-      errores.push(validarFecha(desde, 'desde'));
-    }
-    if (hasta !== undefined) {
-      errores.push(validarFecha(hasta, 'hasta'));
-    }
+    errores.push(...validarRangoFechas(desde, hasta));
     lanzarSiHayErrores(errores);
 
-    return this.brotesService.listarCruzados(region, desde, hasta);
+    return this.brotesService.listarDetalle(region, desde, hasta);
   }
 
   @Get(':id')
