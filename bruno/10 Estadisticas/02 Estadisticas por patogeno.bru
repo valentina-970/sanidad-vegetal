@@ -1,0 +1,15 @@
+meta {
+  name: 02 Estadisticas por patogeno
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/estadisticas/brotes/por-patogeno
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
