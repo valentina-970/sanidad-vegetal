@@ -6,9 +6,10 @@ import { Planta } from '../plantas/entities/plantas.entity.js';
 import { ActualizarSusceptibilidadDto } from './dto/actualizar-susceptibilidad.dto.js';
 import { CrearSusceptibilidadDto } from './dto/crear-susceptibilidad.dto.js';
 import { Susceptibilidad } from './entities/susceptibilidades.entity.js';
+import type { SusceptibilidadesServiceInterface } from './susceptibilidades-service-interface.js';
 
 @Injectable()
-export class SusceptibilidadesService {
+export class SusceptibilidadesService implements SusceptibilidadesServiceInterface {
   constructor(
     @InjectRepository(Susceptibilidad)
     private readonly susceptibilidadesRepository: Repository<Susceptibilidad>,

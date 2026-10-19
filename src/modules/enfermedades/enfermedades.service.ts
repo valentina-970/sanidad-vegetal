@@ -10,9 +10,10 @@ import { DetalleEnfermedadDto } from './dto/detalle-enfermedades.dto.js';
 import { Susceptibilidad } from '../susceptibilidades/entities/susceptibilidades.entity.js';
 import { Brote } from '../brotes/entities/brote.entity.js';
 import { contar, unirConY } from '../../common/mensajes.js';
+import type { EnfermedadesServiceInterface } from './enfermedades-service-interface.js';
 
 @Injectable()
-export class EnfermedadesService {
+export class EnfermedadesService implements EnfermedadesServiceInterface {
   constructor(
     @InjectRepository(Enfermedad)
     private readonly enfermedadesRepository: Repository<Enfermedad>,

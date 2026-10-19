@@ -7,9 +7,10 @@ import { Planta } from '../plantas/entities/plantas.entity.js';
 import { ActualizarBroteDto } from './dto/actualizar-brote.dto.js';
 import { CrearBroteDto } from './dto/crear-brote.dto.js';
 import { Brote } from './entities/brote.entity.js';
+import type { BroteDetalle, BrotesServiceInterface } from './brotes-service-interface.js';
 
 @Injectable()
-export class BrotesService {
+export class BrotesService implements BrotesServiceInterface {
   constructor(
     @InjectRepository(Brote)
     private readonly broteRepository: Repository<Brote>,
@@ -36,7 +37,7 @@ export class BrotesService {
     }
   }
 
-  async crear(dto: CrearBroteDto) {
+  async crear(dto: CrearBroteDto): Promise<Brote> {
     await this.verificarReferencias(dto.plantaId, dto.enfermedadId);
     const brote = this.broteRepository.create({
       plantaId: dto.plantaId,
@@ -54,7 +55,7 @@ export class BrotesService {
     region?: string,
     desde?: string,
     hasta?: string,
-  ) {
+  ): Promise<Brote[]> {
     const query = this.broteRepository.createQueryBuilder('brote');
 
     if (plantaId !== undefined) {
@@ -76,7 +77,7 @@ export class BrotesService {
     return query.orderBy('brote.fecha', 'DESC').getMany();
   }
 
-  async listarDetalle(region?: string, desde?: string, hasta?: string) {
+  async listarDetalle(region?: string, desde?: string, hasta?: string): Promise<BroteDetalle[]> {
     const brotes = await this.listar(undefined, undefined, region, desde, hasta);
 
     const [plantas, enfermedades, patogenos] = await Promise.all([
@@ -100,7 +101,7 @@ export class BrotesService {
     });
   }
 
-  async obtener(id: number) {
+  async obtener(id: number): Promise<Brote> {
     const brote = await this.broteRepository.findOne({ where: { id } });
     if (!brote) {
       throw new NotFoundException(`No existe el brote con el id ${id}`);
@@ -108,7 +109,7 @@ export class BrotesService {
     return brote;
   }
 
-  async actualizar(id: number, dto: ActualizarBroteDto) {
+  async actualizar(id: number, dto: ActualizarBroteDto): Promise<Brote> {
     const brote = await this.obtener(id);
     await this.verificarReferencias(dto.plantaId, dto.enfermedadId);
 
@@ -131,7 +132,7 @@ export class BrotesService {
     return this.broteRepository.save(brote);
   }
 
-  async eliminar(id: number) {
+  async eliminar(id: number): Promise<{ mensaje: string }> {
     await this.obtener(id);
     await this.broteRepository.delete(id);
     return { mensaje: `Brote con id ${id} eliminado exitosamente` };

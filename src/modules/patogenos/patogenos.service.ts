@@ -6,9 +6,10 @@ import { CrearPatogenoDto } from './dto/crear-patogeno.dto.js';
 import { Patogeno } from './entities/patogenos.entity.js';
 import { Enfermedad } from '../enfermedades/entities/enfermedades.entity.js';
 import { contar } from '../../common/mensajes.js';
+import type { PatogenosServiceInterface } from './patogenos-service-interface.js';
 
 @Injectable()
-export class PatogenosService {
+export class PatogenosService implements PatogenosServiceInterface {
   constructor(
     @InjectRepository(Patogeno)
     private readonly patogenosRepository: Repository<Patogeno>,

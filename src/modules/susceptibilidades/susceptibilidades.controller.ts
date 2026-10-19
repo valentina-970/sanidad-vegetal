@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   type ErrorValidacion,
@@ -11,14 +11,18 @@ import {
 } from '../../common/validaciones.js';
 import { ActualizarSusceptibilidadDto } from './dto/actualizar-susceptibilidad.dto.js';
 import { CrearSusceptibilidadDto } from './dto/crear-susceptibilidad.dto.js';
-import { SusceptibilidadesService } from './susceptibilidades.service.js';
+import type { SusceptibilidadesServiceInterface } from './susceptibilidades-service-interface.js';
+import { SUSCEPTIBILIDADES_SERVICE } from './tokens.js';
 
 const NIVELES = ['baja', 'media', 'alta'];
 
 @ApiTags('susceptibilidades')
 @Controller('susceptibilidades')
 export class SusceptibilidadesController {
-  constructor(private readonly susceptibilidadesService: SusceptibilidadesService) { }
+  constructor(
+    @Inject(SUSCEPTIBILIDADES_SERVICE)
+    private readonly susceptibilidadesService: SusceptibilidadesServiceInterface,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Registrar qué tan susceptible es una planta a una enfermedad' })

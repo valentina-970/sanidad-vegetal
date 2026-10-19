@@ -1,8 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { type ErrorValidacion, lanzarSiHayErrores, validarFormatoFecha } from '../../common/validaciones.js';
 import { EstadisticaBrotesDto } from './dto/estadistica-brotes.dto.js';
-import { EstadisticasService } from './estadisticas.service.js';
+import type { EstadisticasServiceInterface } from './estadisticas-service-interface.js';
+import { ESTADISTICAS_SERVICE } from './tokens.js';
 
 function validarRango(desde?: string, hasta?: string): void {
   const errorDesde = desde === undefined ? null : validarFormatoFecha(desde, 'desde');
@@ -20,7 +21,10 @@ function validarRango(desde?: string, hasta?: string): void {
 @ApiResponse({ status: 400, description: 'Fecha con formato inválido o desde posterior a hasta' })
 @Controller('estadisticas/brotes')
 export class EstadisticasController {
-  constructor(private readonly estadisticasService: EstadisticasService) {}
+  constructor(
+    @Inject(ESTADISTICAS_SERVICE)
+    private readonly estadisticasService: EstadisticasServiceInterface,
+  ) {}
 
   @Get('por-enfermedad')
   @ApiOperation({ summary: 'Total de brotes y hectáreas por enfermedad, de mayor a menor' })
