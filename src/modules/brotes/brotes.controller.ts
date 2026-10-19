@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   type ErrorValidacion,
@@ -13,7 +13,8 @@ import {
 } from '../../common/validaciones.js';
 import { ActualizarBroteDto } from './dto/actualizar-brote.dto.js';
 import { CrearBroteDto } from './dto/crear-brote.dto.js';
-import { BrotesService } from './brotes.service.js';
+import type { BrotesServiceInterface } from './brotes-service-interface.js';
+import { BROTES_SERVICE } from './tokens.js';
 
 function validarHectareas(valor: unknown, campo: string): ErrorValidacion {
   if (valor === undefined || valor === null) {
@@ -41,7 +42,10 @@ function validarRangoFechas(desde?: string, hasta?: string): ErrorValidacion[] {
 @ApiTags('brotes')
 @Controller('brotes')
 export class BrotesController {
-  constructor(private readonly brotesService: BrotesService) {}
+  constructor(
+    @Inject(BROTES_SERVICE)
+    private readonly brotesService: BrotesServiceInterface,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Registrar un nuevo brote de enfermedad' })
